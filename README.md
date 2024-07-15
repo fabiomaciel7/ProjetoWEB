@@ -4,7 +4,7 @@ Sistema de gerenciamento de lista de tarefas que ajuda o usuário a gerenciar o 
 
 # Funcionalidades
 
-- Realizar login no sistema<
+- Realizar login no sistema
 - Adicionar tarefa
 - Visualizar tarefa
 - Editar tarefa
