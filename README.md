@@ -1,9 +1,10 @@
 # Projeto da disciplina de Princípios de Desenvolvimento WEB
 
-Sistema de gerenciamento de lista de tarefas que ajuda o usuário a gerenciar o tempo e a organizar suas tarefas.
+Sistema de gerenciamento de lista de tarefas.
 
 # Funcionalidades
 
+- Realizar cadastro no sistema
 - Realizar login no sistema
 - Adicionar tarefa
 - Visualizar tarefa
