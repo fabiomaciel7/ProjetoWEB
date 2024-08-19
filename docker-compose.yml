@@ -9,7 +9,7 @@ services:
    volumes:
     - pgdata:/var/lib/postgresql/data
    environment:
-     POSTGRES_PASSWORD: augusto100
+     POSTGRES_PASSWORD: fabiosql
    ports:
      - 5432:5432
    logging:
