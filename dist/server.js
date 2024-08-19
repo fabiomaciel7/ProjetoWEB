@@ -1,44 +1,67 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const express = require("express");
-const path = require("path");
-const authRoutes = require("./routes/authRoutes");
-const taskRoutes = require("./routes/taskRoutes");
-const { PrismaClient } = require("@prisma/client");
+const express = require('express');
+const path = require('path');
 
 const app = express();
 const port = 3000;
 
-// Inicializa o Prisma Client
-const prisma = new PrismaClient();
-
 app.use(express.json());
-
-// Configura o diretório de arquivos estáticos
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Usando as rotas de autenticação e tarefas
-app.use('/auth', authRoutes);
-app.use('/tasks', taskRoutes);
+let users = [
+    { id: 1, name: 'Fabio', email: 'fabio@email.com' },
+    { id: 2, name: 'Augusto', email: 'augusto@email.com' }
+];
 
-// Rota de teste
+app.get('/users', (req, res) => {
+    res.json(users);
+});
+
 app.get('/', (req, res) => {
     res.send('Hello, world!');
 });
 
-// Rota para limpar todos os usuários (apenas para fins de teste, não usar em produção)
-app.delete('/clear-users', async (req, res) => {
-    await prisma.user.deleteMany();
+app.get('/user/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const user = users.find(user => user.id === id);
+    if (user) {
+        res.json(user);
+    } else {
+        res.status(404).send('User not found');
+    }
+});
+
+app.post('/register', (req, res) => {
+    const new_user = {
+        id: users.length + 1,
+        name: req.body.name,
+        email: req.body.email
+    };
+    users.push(new_user);
+    res.status(201).json(new_user);
+});
+
+app.delete('/users/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    users = users.filter(user => user.id !== id);
     res.status(204).send();
 });
 
-// Inicia o servidor
-app.listen(port, () => {
-    console.log(`Servidor rodando em http://localhost:${port}`);
+app.put('/users/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const userIndex = users.findIndex(user => user.id === id);
+    if (userIndex !== -1) {
+        users[userIndex] = {
+            id: id,
+            name: req.body.name,
+            email: users[userIndex].email
+        };
+        res.json(users[userIndex]);
+    } else {
+        res.status(404).send('User not found');
+    }
 });
 
-// Manter o Prisma Client desconectado após o uso
-process.on('SIGINT', async () => {
-    await prisma.$disconnect();
-    process.exit(0);
+app.listen(port, () => {
+    console.log(`Servidor rodando em http://localhost:${port}`);
 });
