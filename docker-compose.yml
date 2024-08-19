@@ -4,7 +4,7 @@ version: '3'
 services:
  db:
    image: postgres
-   container_name: task-manager-postgres
+   container_name: task-manager
    restart: always
    volumes:
     - pgdata:/var/lib/postgresql/data
