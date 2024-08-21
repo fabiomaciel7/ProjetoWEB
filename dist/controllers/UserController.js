@@ -8,103 +8,90 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
-const client_1 = require("@prisma/client");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const UserService_1 = require("../services/UserService");
 const AuthController_1 = require("./AuthController");
 class UserController {
     constructor() {
-        this.prismaClient = new client_1.PrismaClient();
+        this.userService = new UserService_1.UserService();
         this.authController = new AuthController_1.AuthController();
     }
     create(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { name, email, password } = request.body;
-            const existingUser = yield this.prismaClient.user.findUnique({
-                where: { email },
-            });
-            if (existingUser) {
-                return response.status(400).json({ message: 'User already exists' });
+            try {
+                const user = yield this.userService.createUser(request.body);
+                return response.status(201).json(user);
             }
-            const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-            const user = yield this.prismaClient.user.create({
-                data: {
-                    name,
-                    email,
-                    password: hashedPassword,
-                },
-            });
-            return response.status(201).json(user);
+            catch (error) {
+                return response.status(400).json({ message: error.message });
+            }
         });
     }
     getAll(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const users = yield this.prismaClient.user.findMany();
-            return response.json(users);
+            try {
+                const users = yield this.userService.getAllUsers();
+                return response.json(users);
+            }
+            catch (error) {
+                return response.status(500).json({ message: 'Internal Server Error' });
+            }
         });
     }
     getById(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = request.params;
-            const user = yield this.prismaClient.user.findUnique({
-                where: { id: parseInt(id) },
-            });
-            if (!user) {
-                return response.status(404).json({ message: 'User not found' });
+            try {
+                const { id } = request.params;
+                const user = yield this.userService.getUserById(parseInt(id));
+                if (!user) {
+                    return response.status(404).json({ message: 'User not found' });
+                }
+                return response.json(user);
             }
-            return response.json(user);
+            catch (error) {
+                return response.status(500).json({ message: 'Internal Server Error' });
+            }
         });
     }
     update(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = request.params;
-            const { name, email } = request.body;
-            const user = yield this.prismaClient.user.findUnique({
-                where: { id: parseInt(id) },
-            });
-            if (!user) {
-                return response.status(404).json({ message: 'User not found' });
+            try {
+                const { id } = request.params;
+                const { name, email } = request.body;
+                const user = yield this.userService.updateUser(parseInt(id), { name, email });
+                return response.json(user);
             }
-            const updatedUser = yield this.prismaClient.user.update({
-                where: { id: parseInt(id) },
-                data: {
-                    name,
-                    email,
-                },
-            });
-            return response.json(updatedUser);
+            catch (error) {
+                return response.status(400).json({ message: error.message });
+            }
         });
     }
     delete(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = request.params;
-            const user = yield this.prismaClient.user.findUnique({
-                where: { id: parseInt(id) },
-            });
-            if (!user) {
-                return response.status(404).json({ message: 'User not found' });
+            try {
+                const { id } = request.params;
+                yield this.userService.deleteUser(parseInt(id));
+                return response.status(204).send();
             }
-            yield this.prismaClient.user.delete({
-                where: { id: parseInt(id) },
-            });
-            return response.status(204).send();
+            catch (error) {
+                return response.status(500).json({ message: 'Internal Server Error' });
+            }
         });
     }
     getUserTasks(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = request.params;
-            const user = yield this.prismaClient.user.findUnique({
-                where: { id: parseInt(id) },
-                include: { tasks: true },
-            });
-            if (!user) {
-                return response.status(404).json({ message: 'User not found' });
+            try {
+                const { id } = request.params;
+                const user = yield this.userService.getUserTasks(parseInt(id));
+                if (!user) {
+                    return response.status(404).json({ message: 'User not found' });
+                }
+                return response.json(user.tasks);
             }
-            return response.json(user.tasks);
+            catch (error) {
+                return response.status(500).json({ message: 'Internal Server Error' });
+            }
         });
     }
 }

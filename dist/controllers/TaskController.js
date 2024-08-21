@@ -10,36 +10,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskController = void 0;
-const client_1 = require("@prisma/client");
+const TaskService_1 = require("../services/TaskService");
 class TaskController {
     constructor() {
-        this.prismaClient = new client_1.PrismaClient();
+        this.taskService = new TaskService_1.TaskService();
     }
     create(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             const { title, description, userId } = request.body;
-            const task = yield this.prismaClient.task.create({
-                data: {
-                    title,
-                    description,
-                    userId,
-                },
-            });
+            const task = yield this.taskService.createTask({ title, description, userId });
             return response.status(201).json(task);
         });
     }
     getAll(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tasks = yield this.prismaClient.task.findMany();
+            const tasks = yield this.taskService.getAllTasks();
             return response.json(tasks);
         });
     }
     getById(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = request.params;
-            const task = yield this.prismaClient.task.findUnique({
-                where: { id: parseInt(id) },
-            });
+            const task = yield this.taskService.getTaskById(parseInt(id));
             if (!task) {
                 return response.status(404).json({ message: 'Task not found' });
             }
@@ -49,69 +41,35 @@ class TaskController {
     update(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = request.params;
-            const { title, description, completed } = request.body;
-            const task = yield this.prismaClient.task.findUnique({
-                where: { id: parseInt(id) },
-            });
-            if (!task) {
-                return response.status(404).json({ message: 'Task not found' });
-            }
-            const updatedTask = yield this.prismaClient.task.update({
-                where: { id: parseInt(id) },
-                data: {
-                    title,
-                    description,
-                    completed,
-                },
-            });
-            return response.json(updatedTask);
+            const { title, description } = request.body;
+            const task = yield this.taskService.updateTask(parseInt(id), { title, description });
+            return response.json(task);
         });
     }
     delete(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = request.params;
-            const task = yield this.prismaClient.task.findUnique({
-                where: { id: parseInt(id) },
-            });
-            if (!task) {
-                return response.status(404).json({ message: 'Task not found' });
-            }
-            yield this.prismaClient.task.delete({
-                where: { id: parseInt(id) },
-            });
+            yield this.taskService.deleteTask(parseInt(id));
             return response.status(204).send();
         });
     }
     markAsCompleted(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = request.params;
-            const task = yield this.prismaClient.task.findUnique({
-                where: { id: parseInt(id) },
-            });
-            if (!task) {
-                return response.status(404).json({ message: 'Task not found' });
-            }
-            const updatedTask = yield this.prismaClient.task.update({
-                where: { id: parseInt(id) },
-                data: { completed: true },
-            });
-            return response.json(updatedTask);
+            const task = yield this.taskService.markTaskAsCompleted(parseInt(id));
+            return response.json(task);
         });
     }
     getCompletedTasks(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const completedTasks = yield this.prismaClient.task.findMany({
-                where: { completed: true },
-            });
-            return response.json(completedTasks);
+            const tasks = yield this.taskService.getCompletedTasks();
+            return response.json(tasks);
         });
     }
     getIncompleteTasks(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const incompleteTasks = yield this.prismaClient.task.findMany({
-                where: { completed: false },
-            });
-            return response.json(incompleteTasks);
+            const tasks = yield this.taskService.getIncompleteTasks();
+            return response.json(tasks);
         });
     }
 }
