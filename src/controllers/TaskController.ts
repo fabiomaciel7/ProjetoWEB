@@ -9,8 +9,8 @@ export class TaskController {
     }
 
     async create(request: Request, response: Response) {
-        const { title, description, userId } = request.body;
-        const task = await this.taskService.createTask({ title, description, userId });
+        const { title, description, userId, dueDate } = request.body;
+        const task = await this.taskService.createTask({ title, description, userId, dueDate });
         return response.status(201).json(task);
     }
 
@@ -30,8 +30,8 @@ export class TaskController {
 
     async update(request: Request, response: Response) {
         const { id } = request.params;
-        const { title, description } = request.body;
-        const task = await this.taskService.updateTask(parseInt(id), { title, description });
+        const { title, description, dueDate } = request.body;
+        const task = await this.taskService.updateTask(parseInt(id), { title, description, dueDate });
         return response.json(task);
     }
 

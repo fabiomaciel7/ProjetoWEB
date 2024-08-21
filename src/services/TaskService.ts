@@ -7,8 +7,15 @@ export class TaskService {
         this.prismaClient = new PrismaClient();
     }
 
-    async createTask(data: { title: string; description?: string; userId: number }) {
-        return this.prismaClient.task.create({ data });
+    async createTask(data: { title: string; description?: string; userId: number; dueDate?: Date }) {
+        return this.prismaClient.task.create({
+            data: {
+                title: data.title,
+                description: data.description,
+                userId: data.userId,
+                dueDate: data.dueDate,
+            },
+        });
     }
 
     async getAllTasks() {
@@ -19,10 +26,14 @@ export class TaskService {
         return this.prismaClient.task.findUnique({ where: { id } });
     }
 
-    async updateTask(id: number, data: { title?: string; description?: string }) {
+    async updateTask(id: number, data: { title?: string; description?: string; dueDate?: Date }) {
         return this.prismaClient.task.update({
             where: { id },
-            data,
+            data: {
+                title: data.title,
+                description: data.description,
+                dueDate: data.dueDate,
+            },
         });
     }
 

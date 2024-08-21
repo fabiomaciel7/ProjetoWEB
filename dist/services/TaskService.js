@@ -17,7 +17,14 @@ class TaskService {
     }
     createTask(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.prismaClient.task.create({ data });
+            return this.prismaClient.task.create({
+                data: {
+                    title: data.title,
+                    description: data.description,
+                    userId: data.userId,
+                    dueDate: data.dueDate,
+                },
+            });
         });
     }
     getAllTasks() {
@@ -34,7 +41,11 @@ class TaskService {
         return __awaiter(this, void 0, void 0, function* () {
             return this.prismaClient.task.update({
                 where: { id },
-                data,
+                data: {
+                    title: data.title,
+                    description: data.description,
+                    dueDate: data.dueDate,
+                },
             });
         });
     }
