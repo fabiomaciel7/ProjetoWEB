@@ -1,113 +1,78 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import { UserService } from '../services/UserService';
 import { AuthController } from './AuthController';
 
 export class UserController {
-    private prismaClient: PrismaClient;
+    private userService: UserService;
     private authController: AuthController;
 
     constructor() {
-        this.prismaClient = new PrismaClient();
+        this.userService = new UserService();
         this.authController = new AuthController();
     }
 
     async create(request: Request, response: Response) {
-        const { name, email, password } = request.body;
-
-        const existingUser = await this.prismaClient.user.findUnique({
-            where: { email },
-        });
-
-        if (existingUser) {
-            return response.status(400).json({ message: 'User already exists' });
+        try {
+            const user = await this.userService.createUser(request.body);
+            return response.status(201).json(user);
+        } catch (error: any) {
+            return response.status(400).json({ message: error.message });
         }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = await this.prismaClient.user.create({
-            data: {
-                name,
-                email,
-                password: hashedPassword,
-            },
-        });
-
-        return response.status(201).json(user);
     }
 
     async getAll(request: Request, response: Response) {
-        const users = await this.prismaClient.user.findMany();
-        return response.json(users);
+        try {
+            const users = await this.userService.getAllUsers();
+            return response.json(users);
+        } catch (error: any) {
+            return response.status(500).json({ message: 'Internal Server Error' });
+        }
     }
 
     async getById(request: Request, response: Response) {
-        const { id } = request.params;
-
-        const user = await this.prismaClient.user.findUnique({
-            where: { id: parseInt(id) },
-        });
-
-        if (!user) {
-            return response.status(404).json({ message: 'User not found' });
+        try {
+            const { id } = request.params;
+            const user = await this.userService.getUserById(parseInt(id));
+            if (!user) {
+                return response.status(404).json({ message: 'User not found' });
+            }
+            return response.json(user);
+        } catch (error: any) {
+            return response.status(500).json({ message: 'Internal Server Error' });
         }
-
-        return response.json(user);
     }
 
     async update(request: Request, response: Response) {
-        const { id } = request.params;
-        const { name, email } = request.body;
-
-        const user = await this.prismaClient.user.findUnique({
-            where: { id: parseInt(id) },
-        });
-
-        if (!user) {
-            return response.status(404).json({ message: 'User not found' });
+        try {
+            const { id } = request.params;
+            const { name, email } = request.body;
+            const user = await this.userService.updateUser(parseInt(id), { name, email });
+            return response.json(user);
+        } catch (error: any) {
+            return response.status(400).json({ message: error.message });
         }
-
-        const updatedUser = await this.prismaClient.user.update({
-            where: { id: parseInt(id) },
-            data: {
-                name,
-                email,
-            },
-        });
-
-        return response.json(updatedUser);
     }
 
     async delete(request: Request, response: Response) {
-        const { id } = request.params;
-
-        const user = await this.prismaClient.user.findUnique({
-            where: { id: parseInt(id) },
-        });
-
-        if (!user) {
-            return response.status(404).json({ message: 'User not found' });
+        try {
+            const { id } = request.params;
+            await this.userService.deleteUser(parseInt(id));
+            return response.status(204).send();
+        } catch (error: any) {
+            return response.status(500).json({ message: 'Internal Server Error' });
         }
-
-        await this.prismaClient.user.delete({
-            where: { id: parseInt(id) },
-        });
-
-        return response.status(204).send();
     }
 
     async getUserTasks(request: Request, response: Response) {
-        const { id } = request.params;
-
-        const user = await this.prismaClient.user.findUnique({
-            where: { id: parseInt(id) },
-            include: { tasks: true },
-        });
-
-        if (!user) {
-            return response.status(404).json({ message: 'User not found' });
+        try {
+            const { id } = request.params;
+            const user = await this.userService.getUserTasks(parseInt(id));
+            if (!user) {
+                return response.status(404).json({ message: 'User not found' });
+            }
+            return response.json(user.tasks);
+        } catch (error: any) {
+            return response.status(500).json({ message: 'Internal Server Error' });
         }
-
-        return response.json(user.tasks);
     }
 }
