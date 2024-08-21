@@ -94,5 +94,18 @@ class UserController {
             return response.status(204).send();
         });
     }
+    getUserTasks(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = request.params;
+            const user = yield this.prismaClient.user.findUnique({
+                where: { id: parseInt(id) },
+                include: { tasks: true },
+            });
+            if (!user) {
+                return response.status(404).json({ message: 'User not found' });
+            }
+            return response.json(user.tasks);
+        });
+    }
 }
 exports.UserController = UserController;

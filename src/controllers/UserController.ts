@@ -95,4 +95,19 @@ export class UserController {
 
         return response.status(204).send();
     }
+
+    async getUserTasks(request: Request, response: Response) {
+        const { id } = request.params;
+
+        const user = await this.prismaClient.user.findUnique({
+            where: { id: parseInt(id) },
+            include: { tasks: true },
+        });
+
+        if (!user) {
+            return response.status(404).json({ message: 'User not found' });
+        }
+
+        return response.json(user.tasks);
+    }
 }

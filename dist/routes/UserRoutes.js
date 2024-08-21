@@ -12,4 +12,5 @@ router.get('/user/:id', (req, res) => userController.getById(req, res));
 router.put('/updateUser/:id', (req, res) => userController.update(req, res));
 router.delete('/deleteUser/:id', (req, res) => userController.delete(req, res));
 router.post('/user/login', (req, res) => authController.login(req, res));
+router.get('/user/:id/tasks', (req, res) => userController.getUserTasks(req, res));
 exports.default = router;
