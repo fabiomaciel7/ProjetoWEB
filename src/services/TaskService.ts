@@ -1,62 +1,45 @@
-import { PrismaClient } from '@prisma/client';
+import { TaskRepository } from '../repositories/TaskRepository';
 
 export class TaskService {
-    private prismaClient: PrismaClient;
+    private taskRepository: TaskRepository;
 
     constructor() {
-        this.prismaClient = new PrismaClient();
+        this.taskRepository = new TaskRepository();
     }
 
     async createTask(data: { title: string; description?: string; userId: number; dueDate?: Date }) {
-        return this.prismaClient.task.create({
-            data: {
-                title: data.title,
-                description: data.description,
-                userId: data.userId,
-                dueDate: data.dueDate,
-            },
-        });
+        return this.taskRepository.create(data);
     }
 
     async getAllTasks() {
-        return this.prismaClient.task.findMany();
+        return this.taskRepository.findAll();
     }
 
     async getTaskById(id: number) {
-        return this.prismaClient.task.findUnique({ where: { id } });
+        return this.taskRepository.findById(id);
     }
 
     async updateTask(id: number, data: { title?: string; description?: string; dueDate?: Date }) {
-        return this.prismaClient.task.update({
-            where: { id },
-            data: {
-                title: data.title,
-                description: data.description,
-                dueDate: data.dueDate,
-            },
-        });
+        return this.taskRepository.update(id, data);
     }
 
     async deleteTask(id: number) {
-        return this.prismaClient.task.delete({ where: { id } });
+        return this.taskRepository.delete(id);
     }
 
     async markTaskAsCompleted(id: number) {
-        return this.prismaClient.task.update({
-            where: { id },
-            data: { completed: true },
-        });
+        return this.taskRepository.markAsCompleted(id);
     }
 
     async getCompletedTasks() {
-        return this.prismaClient.task.findMany({ where: { completed: true } });
+        return this.taskRepository.findCompleted();
     }
 
     async getIncompleteTasks() {
-        return this.prismaClient.task.findMany({ where: { completed: false } });
+        return this.taskRepository.findIncomplete();
     }
 
     async getTasksByUserId(userId: number) {
-        return this.prismaClient.task.findMany({ where: { userId } });
+        return this.taskRepository.findByUserId(userId);
     }
 }

@@ -1,60 +1,46 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import { UserRepository } from '../repositories/UserRepository';
 
 export class UserService {
-    private prismaClient: PrismaClient;
+    private userRepository: UserRepository;
 
     constructor() {
-        this.prismaClient = new PrismaClient();
+        this.userRepository = new UserRepository();
     }
 
     async createUser(data: { name: string; email: string; password: string }) {
-        const existingUser = await this.prismaClient.user.findUnique({
-            where: { email: data.email },
-        });
+        const existingUser = await this.userRepository.findByEmail(data.email);
 
         if (existingUser) {
             throw new Error('User already exists');
         }
 
-        const hashedPassword = await bcrypt.hash(data.password, 10);
+        const hashedPassword = await this.userRepository.hashPassword(data.password);
         
-        return this.prismaClient.user.create({
-            data: {
-                name: data.name,
-                email: data.email,
-                password: hashedPassword,
-            },
+        return this.userRepository.create({
+            name: data.name,
+            email: data.email,
+            password: hashedPassword,
         });
     }
 
     async getAllUsers() {
-        return this.prismaClient.user.findMany();
+        return this.userRepository.findAll();
     }
 
     async getUserById(id: number) {
-        return this.prismaClient.user.findUnique({
-            where: { id },
-        });
+        return this.userRepository.findById(id);
     }
 
     async updateUser(id: number, data: { name?: string; email?: string }) {
-        return this.prismaClient.user.update({
-            where: { id },
-            data,
-        });
+        return this.userRepository.update(id, data);
     }
 
     async deleteUser(id: number) {
-        return this.prismaClient.user.delete({
-            where: { id },
-        });
+        return this.userRepository.delete(id);
     }
 
     async getUserTasks(id: number) {
-        return this.prismaClient.user.findUnique({
-            where: { id },
-            include: { tasks: true },
-        });
+        return this.userRepository.findUserWithTasks(id);
     }
 }
