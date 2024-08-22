@@ -1,7 +1,14 @@
 import app from './app';
+import { connectDatabase } from './config/database';
 
-const PORT = process.env.PORT || 3000;
+const port = 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+connectDatabase()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Servidor rodando em http://localhost:${port}`);
+    });
+  })
+  .catch(err => {
+    console.error('Erro ao conectar ao banco de dados:', err);
+  });

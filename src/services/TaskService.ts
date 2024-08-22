@@ -1,4 +1,5 @@
 import { TaskRepository } from '../repositories/TaskRepository';
+import { TaskDto } from '../dtos/TaskDto';
 
 export class TaskService {
     private taskRepository: TaskRepository;
@@ -7,7 +8,7 @@ export class TaskService {
         this.taskRepository = new TaskRepository();
     }
 
-    async createTask(data: { title: string; description?: string; userId: number; dueDate?: Date }) {
+    async createTask(data: Omit<TaskDto, 'id' | 'completed' | 'createdAt' | 'updatedAt'>) { 
         return this.taskRepository.create(data);
     }
 
@@ -19,7 +20,7 @@ export class TaskService {
         return this.taskRepository.findById(id);
     }
 
-    async updateTask(id: number, data: { title?: string; description?: string; dueDate?: Date }) {
+    async updateTask(id: number, data: Partial<Omit<TaskDto, 'id' | 'completed' | 'createdAt' | 'updatedAt'>>) {
         return this.taskRepository.update(id, data);
     }
 

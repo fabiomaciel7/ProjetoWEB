@@ -20,7 +20,8 @@ class UserController {
     create(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield this.userService.createUser(request.body);
+                const userData = request.body;
+                const user = yield this.userService.createUser(userData);
                 return response.status(201).json(user);
             }
             catch (error) {
@@ -58,8 +59,8 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = request.params;
-                const { name, email } = request.body;
-                const user = yield this.userService.updateUser(parseInt(id), { name, email });
+                const userData = request.body;
+                const user = yield this.userService.updateUser(parseInt(id), userData);
                 return response.json(user);
             }
             catch (error) {

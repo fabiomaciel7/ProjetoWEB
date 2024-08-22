@@ -21,7 +21,7 @@ model Session {
   id        Int      @id @default(autoincrement())
   token     String   @unique
   userId    Int
-  user      User     @relation("UserSessions", fields: [userId], references: [id]) // Adicionando o nome da relação
+  user      User     @relation("UserSessions", fields: [userId], references: [id])
   expiresAt DateTime
 
   @@index([token], name: "token_idx")

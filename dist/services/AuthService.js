@@ -32,7 +32,7 @@ class AuthService {
                 yield this.sessionRepository.createSession({
                     token,
                     userId: user.id,
-                    expiresAt: new Date(Date.now() + 3600 * 1000), // Token válido por 1 hora
+                    expiresAt: new Date(Date.now() + 3600 * 1000),
                 });
                 return { success: true, token };
             }

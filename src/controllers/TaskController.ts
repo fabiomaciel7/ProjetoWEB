@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { TaskService } from '../services/TaskService';
+import { TaskDto } from '../dtos/TaskDto';
 
 export class TaskController {
     private taskService: TaskService;
@@ -9,8 +10,8 @@ export class TaskController {
     }
 
     async create(request: Request, response: Response) {
-        const { title, description, userId, dueDate } = request.body;
-        const task = await this.taskService.createTask({ title, description, userId, dueDate });
+        const taskData: Omit<TaskDto, 'id' | 'completed' | 'createdAt' | 'updatedAt'> = request.body;
+        const task = await this.taskService.createTask(taskData);
         return response.status(201).json(task);
     }
 
@@ -30,8 +31,8 @@ export class TaskController {
 
     async update(request: Request, response: Response) {
         const { id } = request.params;
-        const { title, description, dueDate } = request.body;
-        const task = await this.taskService.updateTask(parseInt(id), { title, description, dueDate });
+        const taskData: Partial<Omit<TaskDto, 'id' | 'completed' | 'createdAt' | 'updatedAt'>> = request.body;
+        const task = await this.taskService.updateTask(parseInt(id), taskData);
         return response.json(task);
     }
 
@@ -56,5 +57,4 @@ export class TaskController {
         const tasks = await this.taskService.getIncompleteTasks();
         return response.json(tasks);
     }
-
 }

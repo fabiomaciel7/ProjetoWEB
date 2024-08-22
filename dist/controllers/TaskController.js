@@ -17,8 +17,8 @@ class TaskController {
     }
     create(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { title, description, userId, dueDate } = request.body;
-            const task = yield this.taskService.createTask({ title, description, userId, dueDate });
+            const taskData = request.body;
+            const task = yield this.taskService.createTask(taskData);
             return response.status(201).json(task);
         });
     }
@@ -41,8 +41,8 @@ class TaskController {
     update(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = request.params;
-            const { title, description, dueDate } = request.body;
-            const task = yield this.taskService.updateTask(parseInt(id), { title, description, dueDate });
+            const taskData = request.body;
+            const task = yield this.taskService.updateTask(parseInt(id), taskData);
             return response.json(task);
         });
     }

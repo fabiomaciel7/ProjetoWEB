@@ -64,7 +64,7 @@ class UserRepository {
         return __awaiter(this, void 0, void 0, function* () {
             return this.prismaClient.user.findUnique({
                 where: { id },
-                include: { tasks: true }, // Inclui as tarefas associadas ao usuário
+                include: { tasks: true },
             });
         });
     }
