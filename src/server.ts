@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import path from 'path';
 import userRoutes from './routes/UserRoutes';
 import taskRoutes from './routes/TaskRoutes';
+import authRoutes from './routes/AuthRoutes';
 
 const app = express();
 const port = 3000;
@@ -11,6 +12,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/api', userRoutes);
 app.use('/api', taskRoutes);
+app.use('/api', authRoutes);
 
 app.get('/hello', (req: Request, res: Response) => {
   res.send('Hello, world!');

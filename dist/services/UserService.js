@@ -8,68 +8,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
-const client_1 = require("@prisma/client");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const UserRepository_1 = require("../repositories/UserRepository");
 class UserService {
     constructor() {
-        this.prismaClient = new client_1.PrismaClient();
+        this.userRepository = new UserRepository_1.UserRepository();
     }
     createUser(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existingUser = yield this.prismaClient.user.findUnique({
-                where: { email: data.email },
-            });
+            const existingUser = yield this.userRepository.findByEmail(data.email);
             if (existingUser) {
                 throw new Error('User already exists');
             }
-            const hashedPassword = yield bcrypt_1.default.hash(data.password, 10);
-            return this.prismaClient.user.create({
-                data: {
-                    name: data.name,
-                    email: data.email,
-                    password: hashedPassword,
-                },
+            const hashedPassword = yield this.userRepository.hashPassword(data.password);
+            return this.userRepository.create({
+                name: data.name,
+                email: data.email,
+                password: hashedPassword,
             });
         });
     }
     getAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.prismaClient.user.findMany();
+            return this.userRepository.findAll();
         });
     }
     getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.prismaClient.user.findUnique({
-                where: { id },
-            });
+            return this.userRepository.findById(id);
         });
     }
     updateUser(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.prismaClient.user.update({
-                where: { id },
-                data,
-            });
+            return this.userRepository.update(id, data);
         });
     }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.prismaClient.user.delete({
-                where: { id },
-            });
+            return this.userRepository.delete(id);
         });
     }
     getUserTasks(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.prismaClient.user.findUnique({
-                where: { id },
-                include: { tasks: true },
-            });
+            return this.userRepository.findUserWithTasks(id);
         });
     }
 }

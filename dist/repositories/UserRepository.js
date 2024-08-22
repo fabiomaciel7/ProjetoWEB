@@ -8,57 +8,70 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TaskService = void 0;
-const TaskRepository_1 = require("../repositories/TaskRepository");
-class TaskService {
+exports.UserRepository = void 0;
+const client_1 = require("@prisma/client");
+const bcrypt_1 = __importDefault(require("bcrypt"));
+class UserRepository {
     constructor() {
-        this.taskRepository = new TaskRepository_1.TaskRepository();
+        this.prismaClient = new client_1.PrismaClient();
     }
-    createTask(data) {
+    findByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.create(data);
+            return this.prismaClient.user.findUnique({
+                where: { email },
+            });
         });
     }
-    getAllTasks() {
+    create(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findAll();
+            return this.prismaClient.user.create({
+                data,
+            });
         });
     }
-    getTaskById(id) {
+    findAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findById(id);
+            return this.prismaClient.user.findMany();
         });
     }
-    updateTask(id, data) {
+    findById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.update(id, data);
+            return this.prismaClient.user.findUnique({
+                where: { id },
+            });
         });
     }
-    deleteTask(id) {
+    update(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.delete(id);
+            return this.prismaClient.user.update({
+                where: { id },
+                data,
+            });
         });
     }
-    markTaskAsCompleted(id) {
+    delete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.markAsCompleted(id);
+            return this.prismaClient.user.delete({
+                where: { id },
+            });
         });
     }
-    getCompletedTasks() {
+    findUserWithTasks(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findCompleted();
+            return this.prismaClient.user.findUnique({
+                where: { id },
+                include: { tasks: true }, // Inclui as tarefas associadas ao usuário
+            });
         });
     }
-    getIncompleteTasks() {
+    hashPassword(password) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findIncomplete();
-        });
-    }
-    getTasksByUserId(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findByUserId(userId);
+            return bcrypt_1.default.hash(password, 10);
         });
     }
 }
-exports.TaskService = TaskService;
+exports.UserRepository = UserRepository;
