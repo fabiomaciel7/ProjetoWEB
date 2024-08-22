@@ -46,7 +46,13 @@ export class UserRepository {
     async findUserWithTasks(id: number) {
         return this.prismaClient.user.findUnique({
             where: { id },
-            include: { tasks: true },
+            include: {
+                tasks: {
+                    orderBy: {
+                        dueDate: 'asc',
+                    },
+                },
+            },
         });
     }
 

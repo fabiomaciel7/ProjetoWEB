@@ -55,10 +55,5 @@ class TaskService {
             return this.taskRepository.findIncomplete();
         });
     }
-    getTasksByUserId(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findByUserId(userId);
-        });
-    }
 }
 exports.TaskService = TaskService;

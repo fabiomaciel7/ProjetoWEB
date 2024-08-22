@@ -64,7 +64,13 @@ class UserRepository {
         return __awaiter(this, void 0, void 0, function* () {
             return this.prismaClient.user.findUnique({
                 where: { id },
-                include: { tasks: true },
+                include: {
+                    tasks: {
+                        orderBy: {
+                            dueDate: 'asc',
+                        },
+                    },
+                },
             });
         });
     }

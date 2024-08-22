@@ -39,8 +39,4 @@ export class TaskService {
     async getIncompleteTasks() {
         return this.taskRepository.findIncomplete();
     }
-
-    async getTasksByUserId(userId: number) {
-        return this.taskRepository.findByUserId(userId);
-    }
 }
