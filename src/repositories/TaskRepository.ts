@@ -22,6 +22,28 @@ export class TaskRepository {
         return this.prismaClient.task.findMany();
     }
 
+    async findAllGroupedByUser(): Promise<{ [key: number]: Task[] }> {
+        const tasks = await this.prismaClient.task.findMany({
+            include: {
+                user: true,
+            },
+            orderBy: {
+                userId: 'asc',
+            },
+        });
+
+        const groupedTasks = tasks.reduce((grouped, task) => {
+            const { userId } = task;
+            if (!grouped[userId]) {
+                grouped[userId] = [];
+            }
+            grouped[userId].push(task);
+            return grouped;
+        }, {} as { [key: number]: Task[] });
+
+        return groupedTasks;
+    }
+
     async findById(id: number): Promise<Task | null> {
         return this.prismaClient.task.findUnique({ where: { id } });
     }

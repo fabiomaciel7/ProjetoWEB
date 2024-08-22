@@ -16,6 +16,10 @@ export class TaskService {
         return this.taskRepository.findAll();
     }
 
+    async findAllGroupedByUser(): Promise<{ [key: number]: any }> {
+        return this.taskRepository.findAllGroupedByUser();
+    }
+
     async getTaskById(id: number) {
         return this.taskRepository.findById(id);
     }

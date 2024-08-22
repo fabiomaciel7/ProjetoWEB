@@ -28,6 +28,17 @@ class TaskController {
             return response.json(tasks);
         });
     }
+    getAllTasksGroupedByUser(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const tasksGrouped = yield this.taskService.findAllGroupedByUser();
+                return response.json(tasksGrouped);
+            }
+            catch (error) {
+                return response.status(500).json({ message: 'Internal Server Error' });
+            }
+        });
+    }
     getById(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = request.params;

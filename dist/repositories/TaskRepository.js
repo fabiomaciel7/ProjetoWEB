@@ -32,6 +32,27 @@ class TaskRepository {
             return this.prismaClient.task.findMany();
         });
     }
+    findAllGroupedByUser() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tasks = yield this.prismaClient.task.findMany({
+                include: {
+                    user: true,
+                },
+                orderBy: {
+                    userId: 'asc',
+                },
+            });
+            const groupedTasks = tasks.reduce((grouped, task) => {
+                const { userId } = task;
+                if (!grouped[userId]) {
+                    grouped[userId] = [];
+                }
+                grouped[userId].push(task);
+                return grouped;
+            }, {});
+            return groupedTasks;
+        });
+    }
     findById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.prismaClient.task.findUnique({ where: { id } });

@@ -25,6 +25,11 @@ class TaskService {
             return this.taskRepository.findAll();
         });
     }
+    findAllGroupedByUser() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.taskRepository.findAllGroupedByUser();
+        });
+    }
     getTaskById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.taskRepository.findById(id);

@@ -6,6 +6,7 @@ const router = Router();
 
 router.post('/task/create', (req, res) => taskController.create(req, res));
 router.get('/tasks', (req, res) => taskController.getAll(req, res));
+router.get('/tasks/byuser', (req, res) => taskController.getAllTasksGroupedByUser(req, res));
 router.get('/task/:id', (req, res) => taskController.getById(req, res));
 router.put('/task/update/:id', (req, res) => taskController.update(req, res));
 router.delete('/task/delete/:id', (req, res) => taskController.delete(req, res));

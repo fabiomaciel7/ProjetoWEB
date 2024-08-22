@@ -20,6 +20,15 @@ export class TaskController {
         return response.json(tasks);
     }
 
+    async getAllTasksGroupedByUser(request: Request, response: Response) {
+        try {
+            const tasksGrouped = await this.taskService.findAllGroupedByUser();
+            return response.json(tasksGrouped);
+        } catch (error: any) {
+            return response.status(500).json({ message: 'Internal Server Error' });
+        }
+    }
+
     async getById(request: Request, response: Response) {
         const { id } = request.params;
         const task = await this.taskService.getTaskById(parseInt(id));
