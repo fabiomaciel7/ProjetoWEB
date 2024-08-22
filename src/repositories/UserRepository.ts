@@ -46,7 +46,7 @@ export class UserRepository {
     async findUserWithTasks(id: number) {
         return this.prismaClient.user.findUnique({
             where: { id },
-            include: { tasks: true }, // Inclui as tarefas associadas ao usuário
+            include: { tasks: true },
         });
     }
 

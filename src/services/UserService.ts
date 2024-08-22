@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { UserDto } from '../dtos/UserDto';
 import { UserRepository } from '../repositories/UserRepository';
 
 export class UserService {
@@ -8,7 +8,7 @@ export class UserService {
         this.userRepository = new UserRepository();
     }
 
-    async createUser(data: { name: string; email: string; password: string }) {
+    async createUser(data: UserDto & { password: string }) {
         const existingUser = await this.userRepository.findByEmail(data.email);
 
         if (existingUser) {
@@ -32,7 +32,7 @@ export class UserService {
         return this.userRepository.findById(id);
     }
 
-    async updateUser(id: number, data: { name?: string; email?: string }) {
+    async updateUser(id: number, data: Partial<UserDto>) {
         return this.userRepository.update(id, data);
     }
 

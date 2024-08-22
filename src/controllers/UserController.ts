@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
 import { AuthController } from './AuthController';
+import { UserDto } from '../dtos/UserDto';
 
 export class UserController {
     private userService: UserService;
@@ -13,7 +14,8 @@ export class UserController {
 
     async create(request: Request, response: Response) {
         try {
-            const user = await this.userService.createUser(request.body);
+            const userData: UserDto = request.body;
+            const user = await this.userService.createUser(userData);
             return response.status(201).json(user);
         } catch (error: any) {
             return response.status(400).json({ message: error.message });
@@ -45,8 +47,8 @@ export class UserController {
     async update(request: Request, response: Response) {
         try {
             const { id } = request.params;
-            const { name, email } = request.body;
-            const user = await this.userService.updateUser(parseInt(id), { name, email });
+            const userData: Partial<UserDto> = request.body;
+            const user = await this.userService.updateUser(parseInt(id), userData);
             return response.json(user);
         } catch (error: any) {
             return response.status(400).json({ message: error.message });
