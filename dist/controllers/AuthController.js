@@ -17,35 +17,53 @@ class AuthController {
     }
     login(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { email, password } = request.body;
-            const result = yield this.authService.login(email, password);
-            if (result.success) {
-                return response.json({ message: 'Login successful', token: result.token });
+            try {
+                const { email, password } = request.body;
+                const result = yield this.authService.login(email, password);
+                if (result.success) {
+                    return response.json({ message: 'Login successful', token: result.token });
+                }
+                else {
+                    return response.status(401).json({ message: 'Invalid credentials' });
+                }
             }
-            else {
-                return response.status(401).json({ message: 'Invalid credentials' });
+            catch (error) {
+                console.error('Error during login:', error);
+                return response.status(500).json({ message: 'Internal Server Error' });
             }
         });
     }
     validateToken(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const token = (_a = request.headers['authorization']) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
-            const isValid = yield this.authService.validateToken(token || '');
-            if (isValid) {
-                return response.status(200).json({ message: 'Token is valid' });
+            try {
+                const token = (_a = request.headers['authorization']) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+                const isValid = yield this.authService.validateToken(token);
+                if (isValid) {
+                    return response.status(200).json({ message: 'Token is valid' });
+                }
+                else {
+                    return response.status(401).json({ message: 'Invalid or expired token' });
+                }
             }
-            else {
-                return response.status(401).json({ message: 'Invalid or expired token' });
+            catch (error) {
+                console.error('Error validating token:', error);
+                return response.status(500).json({ message: 'Internal Server Error' });
             }
         });
     }
     logout(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const token = (_a = request.headers['authorization']) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
-            yield this.authService.logout(token || '');
-            return response.status(200).json({ message: 'Logout successful' });
+            try {
+                const token = (_a = request.headers['authorization']) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+                yield this.authService.logout(token);
+                return response.status(200).json({ message: 'Logout successful' });
+            }
+            catch (error) {
+                console.error('Error logging out:', error);
+                return response.status(500).json({ message: 'Internal Server Error' });
+            }
         });
     }
     listSessions(request, response) {

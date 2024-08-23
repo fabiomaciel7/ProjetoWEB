@@ -25,6 +25,7 @@ class UserController {
                 return response.status(201).json(user);
             }
             catch (error) {
+                console.error('Error creating user:', error);
                 return response.status(400).json({ message: error.message });
             }
         });
@@ -36,6 +37,7 @@ class UserController {
                 return response.json(users);
             }
             catch (error) {
+                console.error('Error getting users:', error);
                 return response.status(500).json({ message: 'Internal Server Error' });
             }
         });
@@ -51,6 +53,7 @@ class UserController {
                 return response.json(user);
             }
             catch (error) {
+                console.error('Error getting user by ID:', error);
                 return response.status(500).json({ message: 'Internal Server Error' });
             }
         });
@@ -64,6 +67,7 @@ class UserController {
                 return response.json(user);
             }
             catch (error) {
+                console.error('Error updating user:', error);
                 return response.status(400).json({ message: error.message });
             }
         });
@@ -76,6 +80,7 @@ class UserController {
                 return response.status(204).send();
             }
             catch (error) {
+                console.error('Error deleting user:', error);
                 return response.status(500).json({ message: 'Internal Server Error' });
             }
         });
@@ -91,6 +96,7 @@ class UserController {
                 return response.json(user.tasks);
             }
             catch (error) {
+                console.error('Error getting user tasks:', error);
                 return response.status(500).json({ message: 'Internal Server Error' });
             }
         });
