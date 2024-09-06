@@ -11,11 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const UserService_1 = require("../services/UserService");
-const AuthController_1 = require("./AuthController");
 class UserController {
     constructor() {
         this.userService = new UserService_1.UserService();
-        this.authController = new AuthController_1.AuthController();
     }
     create(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -46,6 +44,9 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = request.params;
+                if (parseInt(id) !== request.userId && !request.isAdmin) {
+                    return response.status(403).json({ message: 'Acesso negado' });
+                }
                 const user = yield this.userService.getUserById(parseInt(id));
                 if (!user) {
                     return response.status(404).json({ message: 'User not found' });
@@ -63,6 +64,9 @@ class UserController {
             try {
                 const { id } = request.params;
                 const userData = request.body;
+                if (parseInt(id) !== request.userId && !request.isAdmin) {
+                    return response.status(403).json({ message: 'Acesso negado' });
+                }
                 const user = yield this.userService.updateUser(parseInt(id), userData);
                 return response.json(user);
             }
@@ -76,27 +80,14 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = request.params;
+                if (parseInt(id) !== request.userId && !request.isAdmin) {
+                    return response.status(403).json({ message: 'Acesso negado' });
+                }
                 yield this.userService.deleteUser(parseInt(id));
                 return response.status(204).send();
             }
             catch (error) {
                 console.error('Error deleting user:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
-            }
-        });
-    }
-    getUserTasks(request, response) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { id } = request.params;
-                const user = yield this.userService.getUserTasks(parseInt(id));
-                if (!user) {
-                    return response.status(404).json({ message: 'User not found' });
-                }
-                return response.json(user.tasks);
-            }
-            catch (error) {
-                console.error('Error getting user tasks:', error);
                 return response.status(500).json({ message: 'Internal Server Error' });
             }
         });

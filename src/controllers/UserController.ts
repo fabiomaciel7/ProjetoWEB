@@ -1,15 +1,12 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
-import { AuthController } from './AuthController';
 import { UserDto } from '../dtos/UserDto';
 
 export class UserController {
     private userService: UserService;
-    private authController: AuthController;
 
     constructor() {
         this.userService = new UserService();
-        this.authController = new AuthController();
     }
 
     async create(request: Request, response: Response) {
@@ -36,6 +33,11 @@ export class UserController {
     async getById(request: Request, response: Response) {
         try {
             const { id } = request.params;
+    
+            if (parseInt(id) !== request.userId && !request.isAdmin) {
+                return response.status(403).json({ message: 'Acesso negado' });
+            }
+    
             const user = await this.userService.getUserById(parseInt(id));
             if (!user) {
                 return response.status(404).json({ message: 'User not found' });
@@ -46,11 +48,17 @@ export class UserController {
             return response.status(500).json({ message: 'Internal Server Error' });
         }
     }
+    
 
     async update(request: Request, response: Response) {
         try {
             const { id } = request.params;
             const userData: Partial<UserDto> = request.body;
+
+            if (parseInt(id) !== request.userId && !request.isAdmin) {
+                return response.status(403).json({ message: 'Acesso negado' });
+            }
+
             const user = await this.userService.updateUser(parseInt(id), userData);
             return response.json(user);
         } catch (error: any) {
@@ -62,6 +70,11 @@ export class UserController {
     async delete(request: Request, response: Response) {
         try {
             const { id } = request.params;
+
+            if (parseInt(id) !== request.userId && !request.isAdmin) {
+                return response.status(403).json({ message: 'Acesso negado' });
+            }
+
             await this.userService.deleteUser(parseInt(id));
             return response.status(204).send();
         } catch (error: any) {
@@ -70,17 +83,4 @@ export class UserController {
         }
     }
 
-    async getUserTasks(request: Request, response: Response) {
-        try {
-            const { id } = request.params;
-            const user = await this.userService.getUserTasks(parseInt(id));
-            if (!user) {
-                return response.status(404).json({ message: 'User not found' });
-            }
-            return response.json(user.tasks);
-        } catch (error: any) {
-            console.error('Error getting user tasks:', error);
-            return response.status(500).json({ message: 'Internal Server Error' });
-        }
-    }
 }
