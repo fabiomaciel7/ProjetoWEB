@@ -11,10 +11,6 @@ export class SessionRepository {
         return this.prismaClient.session.create({ data });
     }
 
-    async findSessionByToken(token: string) {
-        return this.prismaClient.session.findUnique({ where: { token } });
-    }
-
     async deleteSession(token: string) {
         return this.prismaClient.session.delete({ where: { token } });
     }

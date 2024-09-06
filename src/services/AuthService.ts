@@ -35,15 +35,6 @@ export class AuthService {
         }
     }
 
-    async validateToken(token: string) {
-        if (!token) {
-            return false;
-        }
-
-        const session = await this.sessionRepository.findSessionByToken(token);
-        return session && session.expiresAt > new Date();
-    }
-
     async logout(token: string) {
         return await this.sessionRepository.deleteSession(token);
     }

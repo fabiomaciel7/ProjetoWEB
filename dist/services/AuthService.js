@@ -43,15 +43,6 @@ class AuthService {
             }
         });
     }
-    validateToken(token) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!token) {
-                return false;
-            }
-            const session = yield this.sessionRepository.findSessionByToken(token);
-            return session && session.expiresAt > new Date();
-        });
-    }
     logout(token) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.sessionRepository.deleteSession(token);

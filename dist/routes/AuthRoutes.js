@@ -6,7 +6,6 @@ const AuthMiddleware_1 = require("../middlewares/AuthMiddleware");
 const authController = new AuthController_1.AuthController();
 const router = (0, express_1.Router)();
 router.post('/login', (req, res) => authController.login(req, res));
-router.get('/validate-token', (req, res) => authController.validateToken(req, res));
 router.post('/logout', (req, res) => authController.logout(req, res));
 router.get('/sessions', AuthMiddleware_1.verifyToken, (req, res) => authController.listSessions(req, res));
 exports.default = router;
