@@ -54,4 +54,28 @@ export class UserService {
         user.isAdmin = true;
         return await this.userRepository.update(userId, user);
     }
+
+    async hasAdmin(): Promise<boolean> {
+        const admin = await this.userRepository.findAdmin();
+        return !!admin;
+    }
+
+    async createDefaultAdmin() {
+        const defaultAdminData: Omit<UserDto, 'id' | 'createdAt'> & { password: string } = {
+            name: 'Admin',
+            email: 'admin@default.com',
+            password: 'admin',
+            isAdmin: true,
+        };
+
+        const hashedPassword = await this.userRepository.hashPassword(defaultAdminData.password);
+
+        return this.userRepository.createAdmin({
+            name: defaultAdminData.name,
+            email: defaultAdminData.email,
+            password: hashedPassword,
+            isAdmin: defaultAdminData.isAdmin,
+        });
+    }
+
 }
