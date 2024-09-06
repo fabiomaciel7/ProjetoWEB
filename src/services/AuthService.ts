@@ -51,4 +51,8 @@ export class AuthService {
     async listSessions() {
         return await this.sessionRepository.listSessions();
     }
+
+    async listUserSessions(userId: number) {
+        return await this.sessionRepository.listUserSessions(userId);
+    }
 }

@@ -69,8 +69,18 @@ class AuthController {
     listSessions(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const sessions = yield this.authService.listSessions();
-                return response.status(200).json(sessions);
+                if (request.isAdmin) {
+                    const sessions = yield this.authService.listSessions();
+                    return response.status(200).json(sessions);
+                }
+                else {
+                    const userId = request.userId;
+                    if (typeof userId !== 'number') {
+                        return response.status(400).json({ message: 'User ID is required' });
+                    }
+                    const sessions = yield this.authService.listUserSessions(userId);
+                    return response.status(200).json(sessions);
+                }
             }
             catch (error) {
                 console.error('Error listing sessions:', error);

@@ -53,11 +53,25 @@ export class AuthController {
 
     async listSessions(request: Request, response: Response) {
         try {
-            const sessions = await this.authService.listSessions();
-            return response.status(200).json(sessions);
+            if (request.isAdmin) {
+                const sessions = await this.authService.listSessions();
+                return response.status(200).json(sessions);
+            } else {
+
+                const userId = request.userId;
+                
+                if (typeof userId !== 'number') {
+                    return response.status(400).json({ message: 'User ID is required' });
+                }
+    
+                const sessions = await this.authService.listUserSessions(userId);
+                return response.status(200).json(sessions);
+            }
         } catch (error) {
             console.error('Error listing sessions:', error);
             return response.status(500).json({ message: 'Internal Server Error' });
         }
     }
+    
+    
 }

@@ -35,5 +35,14 @@ class SessionRepository {
             return this.prismaClient.session.findMany();
         });
     }
+    listUserSessions(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.prismaClient.session.findMany({
+                where: {
+                    userId: userId,
+                },
+            });
+        });
+    }
 }
 exports.SessionRepository = SessionRepository;

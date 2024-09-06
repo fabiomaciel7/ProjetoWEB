@@ -22,4 +22,12 @@ export class SessionRepository {
     async listSessions() {
         return this.prismaClient.session.findMany();
     }
+
+    async listUserSessions(userId: number) {
+        return this.prismaClient.session.findMany({
+            where: {
+                userId: userId,
+            },
+        });
+    }
 }

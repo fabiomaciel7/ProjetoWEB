@@ -62,5 +62,10 @@ class AuthService {
             return yield this.sessionRepository.listSessions();
         });
     }
+    listUserSessions(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.sessionRepository.listUserSessions(userId);
+        });
+    }
 }
 exports.AuthService = AuthService;
