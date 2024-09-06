@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const uuid_1 = require("uuid");
 const client_1 = require("@prisma/client");
 const SessionRepository_1 = require("../repositories/SessionRepository");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class AuthService {
     constructor() {
         this.prismaClient = new client_1.PrismaClient();
@@ -28,7 +28,9 @@ class AuthService {
                 where: { email },
             });
             if (user && (yield bcrypt_1.default.compare(password, user.password))) {
-                const token = (0, uuid_1.v4)();
+                const token = jsonwebtoken_1.default.sign({ id: user.id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, {
+                    expiresIn: '1h',
+                });
                 yield this.sessionRepository.createSession({
                     token,
                     userId: user.id,

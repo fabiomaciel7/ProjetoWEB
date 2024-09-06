@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaClient } from '@prisma/client';
 import { SessionRepository } from '../repositories/SessionRepository';
+import jwt from 'jsonwebtoken';
 
 export class AuthService {
     private prismaClient: PrismaClient;
@@ -18,7 +19,10 @@ export class AuthService {
         });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            const token = uuidv4();
+            const token = jwt.sign({ id: user.id, isAdmin: user.isAdmin }, process.env.JWT_SECRET as string, {
+                expiresIn: '1h',
+            });
+
             await this.sessionRepository.createSession({
                 token,
                 userId: user.id,

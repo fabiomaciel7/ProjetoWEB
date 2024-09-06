@@ -11,7 +11,13 @@ export class TaskController {
 
     async create(request: Request, response: Response) {
         try {
+            if (!request.userId) {
+                return response.status(400).json({ message: 'User ID is required' });
+            }
+
             const taskData: Omit<TaskDto, 'id' | 'completed' | 'createdAt' | 'updatedAt'> = request.body;
+            taskData.userId = request.userId;
+
             const task = await this.taskService.createTask(taskData);
             return response.status(201).json(task);
         } catch (error) {
@@ -22,16 +28,24 @@ export class TaskController {
 
     async getAll(request: Request, response: Response) {
         try {
-            const tasks = await this.taskService.getAllTasks();
+            if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                return response.status(400).json({ message: 'User ID and admin status are required' });
+            }
+
+            const tasks = await this.taskService.getAllTasks(request.isAdmin, request.userId);
             return response.json(tasks);
         } catch (error) {
             console.error('Error getting tasks:', error);
             return response.status(500).json({ message: 'Internal Server Error' });
         }
     }
-
+    
     async getAllTasksGroupedByUser(request: Request, response: Response) {
         try {
+            if (!request.isAdmin) {
+                return response.status(403).json({ message: 'Access denied' });
+            }
+
             const tasksGrouped = await this.taskService.findAllGroupedByUser();
             return response.json(tasksGrouped);
         } catch (error) {
@@ -42,11 +56,17 @@ export class TaskController {
 
     async getById(request: Request, response: Response) {
         try {
-            const { id } = request.params;
-            const task = await this.taskService.getTaskById(parseInt(id));
-            if (!task) {
-                return response.status(404).json({ message: 'Task not found' });
+            if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                return response.status(400).json({ message: 'User ID and admin status are required' });
             }
+
+            const { id } = request.params;
+            const task = await this.taskService.getTaskById(parseInt(id), request.userId, request.isAdmin);
+
+            if (!task) {
+                return response.status(404).json({ message: 'Task not found or access denied' });
+            }
+
             return response.json(task);
         } catch (error) {
             console.error('Error getting task by ID:', error);
@@ -56,9 +76,14 @@ export class TaskController {
 
     async update(request: Request, response: Response) {
         try {
+            if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                return response.status(400).json({ message: 'User ID and admin status are required' });
+            }
+
             const { id } = request.params;
             const taskData: Partial<Omit<TaskDto, 'id' | 'completed' | 'createdAt' | 'updatedAt'>> = request.body;
-            const task = await this.taskService.updateTask(parseInt(id), taskData);
+            const task = await this.taskService.updateTask(parseInt(id), taskData, request.userId, request.isAdmin);
+
             return response.json(task);
         } catch (error) {
             console.error('Error updating task:', error);
@@ -68,8 +93,13 @@ export class TaskController {
 
     async delete(request: Request, response: Response) {
         try {
+            if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                return response.status(400).json({ message: 'User ID and admin status are required' });
+            }
+
             const { id } = request.params;
-            await this.taskService.deleteTask(parseInt(id));
+            await this.taskService.deleteTask(parseInt(id), request.userId, request.isAdmin);
+
             return response.status(204).send();
         } catch (error) {
             console.error('Error deleting task:', error);
@@ -79,8 +109,13 @@ export class TaskController {
 
     async markAsCompleted(request: Request, response: Response) {
         try {
+            if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                return response.status(400).json({ message: 'User ID and admin status are required' });
+            }
+
             const { id } = request.params;
-            const task = await this.taskService.markTaskAsCompleted(parseInt(id));
+            const task = await this.taskService.markTaskAsCompleted(parseInt(id), request.userId, request.isAdmin);
+
             return response.json(task);
         } catch (error) {
             console.error('Error marking task as completed:', error);
@@ -90,7 +125,11 @@ export class TaskController {
 
     async getCompletedTasks(request: Request, response: Response) {
         try {
-            const tasks = await this.taskService.getCompletedTasks();
+            if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                return response.status(400).json({ message: 'User ID and admin status are required' });
+            }
+
+            const tasks = await this.taskService.getCompletedTasks(request.isAdmin, request.userId);
             return response.json(tasks);
         } catch (error) {
             console.error('Error getting completed tasks:', error);
@@ -100,7 +139,11 @@ export class TaskController {
 
     async getIncompleteTasks(request: Request, response: Response) {
         try {
-            const tasks = await this.taskService.getIncompleteTasks();
+            if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                return response.status(400).json({ message: 'User ID and admin status are required' });
+            }
+
+            const tasks = await this.taskService.getIncompleteTasks(request.isAdmin, request.userId);
             return response.json(tasks);
         } catch (error) {
             console.error('Error getting incomplete tasks:', error);

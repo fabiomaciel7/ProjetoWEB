@@ -18,7 +18,11 @@ class TaskController {
     create(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (!request.userId) {
+                    return response.status(400).json({ message: 'User ID is required' });
+                }
                 const taskData = request.body;
+                taskData.userId = request.userId;
                 const task = yield this.taskService.createTask(taskData);
                 return response.status(201).json(task);
             }
@@ -31,7 +35,10 @@ class TaskController {
     getAll(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const tasks = yield this.taskService.getAllTasks();
+                if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                }
+                const tasks = yield this.taskService.getAllTasks(request.isAdmin, request.userId);
                 return response.json(tasks);
             }
             catch (error) {
@@ -43,6 +50,9 @@ class TaskController {
     getAllTasksGroupedByUser(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (!request.isAdmin) {
+                    return response.status(403).json({ message: 'Access denied' });
+                }
                 const tasksGrouped = yield this.taskService.findAllGroupedByUser();
                 return response.json(tasksGrouped);
             }
@@ -55,10 +65,13 @@ class TaskController {
     getById(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                }
                 const { id } = request.params;
-                const task = yield this.taskService.getTaskById(parseInt(id));
+                const task = yield this.taskService.getTaskById(parseInt(id), request.userId, request.isAdmin);
                 if (!task) {
-                    return response.status(404).json({ message: 'Task not found' });
+                    return response.status(404).json({ message: 'Task not found or access denied' });
                 }
                 return response.json(task);
             }
@@ -71,9 +84,12 @@ class TaskController {
     update(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                }
                 const { id } = request.params;
                 const taskData = request.body;
-                const task = yield this.taskService.updateTask(parseInt(id), taskData);
+                const task = yield this.taskService.updateTask(parseInt(id), taskData, request.userId, request.isAdmin);
                 return response.json(task);
             }
             catch (error) {
@@ -85,8 +101,11 @@ class TaskController {
     delete(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                }
                 const { id } = request.params;
-                yield this.taskService.deleteTask(parseInt(id));
+                yield this.taskService.deleteTask(parseInt(id), request.userId, request.isAdmin);
                 return response.status(204).send();
             }
             catch (error) {
@@ -98,8 +117,11 @@ class TaskController {
     markAsCompleted(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                }
                 const { id } = request.params;
-                const task = yield this.taskService.markTaskAsCompleted(parseInt(id));
+                const task = yield this.taskService.markTaskAsCompleted(parseInt(id), request.userId, request.isAdmin);
                 return response.json(task);
             }
             catch (error) {
@@ -111,7 +133,10 @@ class TaskController {
     getCompletedTasks(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const tasks = yield this.taskService.getCompletedTasks();
+                if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                }
+                const tasks = yield this.taskService.getCompletedTasks(request.isAdmin, request.userId);
                 return response.json(tasks);
             }
             catch (error) {
@@ -123,7 +148,10 @@ class TaskController {
     getIncompleteTasks(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const tasks = yield this.taskService.getIncompleteTasks();
+                if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                }
+                const tasks = yield this.taskService.getIncompleteTasks(request.isAdmin, request.userId);
                 return response.json(tasks);
             }
             catch (error) {
