@@ -92,5 +92,24 @@ class UserController {
             }
         });
     }
+    promoteToAdmin(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = request.params;
+                if (!request.isAdmin) {
+                    return response.status(403).json({ message: 'Access denied' });
+                }
+                const updatedUser = yield this.userService.promoteToAdmin(parseInt(id));
+                if (!updatedUser) {
+                    return response.status(404).json({ message: 'User not found' });
+                }
+                return response.status(200).json(updatedUser);
+            }
+            catch (error) {
+                console.error('Error promoting user to admin:', error);
+                return response.status(500).json({ message: 'Internal Server Error' });
+            }
+        });
+    }
 }
 exports.UserController = UserController;

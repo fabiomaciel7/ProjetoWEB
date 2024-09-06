@@ -10,5 +10,6 @@ router.get('/users',verifyToken,  isAdmin, (req, res) => userController.getAll(r
 router.get('/user/:id',verifyToken,  (req, res) => userController.getById(req, res));
 router.put('/user/update/:id',verifyToken,  (req, res) => userController.update(req, res));
 router.delete('/user/delete/:id',verifyToken,  (req, res) => userController.delete(req, res));
+router.post('/users/promote/:id', verifyToken, isAdmin, (req, res) =>  userController.promoteToAdmin(req, res));
 
 export default router;

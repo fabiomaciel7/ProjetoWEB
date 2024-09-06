@@ -10,4 +10,5 @@ router.get('/users', AuthMiddleware_1.verifyToken, AuthMiddleware_1.isAdmin, (re
 router.get('/user/:id', AuthMiddleware_1.verifyToken, (req, res) => userController.getById(req, res));
 router.put('/user/update/:id', AuthMiddleware_1.verifyToken, (req, res) => userController.update(req, res));
 router.delete('/user/delete/:id', AuthMiddleware_1.verifyToken, (req, res) => userController.delete(req, res));
+router.post('/users/promote/:id', AuthMiddleware_1.verifyToken, AuthMiddleware_1.isAdmin, (req, res) => userController.promoteToAdmin(req, res));
 exports.default = router;

@@ -54,5 +54,15 @@ class UserService {
             return this.userRepository.findUserWithTasks(id);
         });
     }
+    promoteToAdmin(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.userRepository.findById(userId);
+            if (!user) {
+                return null;
+            }
+            user.isAdmin = true;
+            return yield this.userRepository.update(userId, user);
+        });
+    }
 }
 exports.UserService = UserService;

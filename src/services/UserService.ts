@@ -43,4 +43,15 @@ export class UserService {
     async getUserTasks(id: number) {
         return this.userRepository.findUserWithTasks(id);
     }
+
+    async promoteToAdmin(userId: number) {
+        const user = await this.userRepository.findById(userId);
+        
+        if (!user) {
+            return null;
+        }
+    
+        user.isAdmin = true;
+        return await this.userRepository.update(userId, user);
+    }
 }

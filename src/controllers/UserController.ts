@@ -83,4 +83,26 @@ export class UserController {
         }
     }
 
+    async promoteToAdmin(request: Request, response: Response) {
+        try {
+            const { id } = request.params;
+    
+            if (!request.isAdmin) {
+                return response.status(403).json({ message: 'Access denied' });
+            }
+    
+            const updatedUser = await this.userService.promoteToAdmin(parseInt(id));
+            
+            if (!updatedUser) {
+                return response.status(404).json({ message: 'User not found' });
+            }
+    
+            return response.status(200).json(updatedUser);
+        } catch (error) {
+            console.error('Error promoting user to admin:', error);
+            return response.status(500).json({ message: 'Internal Server Error' });
+        }
+    }
+    
+
 }
