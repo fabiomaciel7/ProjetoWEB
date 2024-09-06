@@ -20,44 +20,74 @@ class TaskService {
             return this.taskRepository.create(data);
         });
     }
-    getAllTasks() {
+    getAllTasks(isAdmin, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findAll();
+            if (isAdmin) {
+                return this.taskRepository.findAll();
+            }
+            else {
+                return this.taskRepository.findByUserId(userId);
+            }
+        });
+    }
+    getTaskById(id, userId, isAdmin) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const task = yield this.taskRepository.findById(id);
+            if (!task)
+                return null;
+            if (!isAdmin && task.userId !== userId) {
+                throw new Error('Access denied');
+            }
+            return task;
+        });
+    }
+    updateTask(id, data, userId, isAdmin) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const task = yield this.getTaskById(id, userId, isAdmin);
+            if (!task)
+                throw new Error('Task not found or access denied');
+            return this.taskRepository.update(id, data);
+        });
+    }
+    deleteTask(id, userId, isAdmin) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const task = yield this.getTaskById(id, userId, isAdmin);
+            if (!task)
+                throw new Error('Task not found or access denied');
+            return this.taskRepository.delete(id);
+        });
+    }
+    markTaskAsCompleted(id, userId, isAdmin) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const task = yield this.getTaskById(id, userId, isAdmin);
+            if (!task)
+                throw new Error('Task not found or access denied');
+            return this.taskRepository.markAsCompleted(id);
+        });
+    }
+    getCompletedTasks(isAdmin, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (isAdmin) {
+                return this.taskRepository.findCompleted();
+            }
+            else {
+                return this.taskRepository.findCompletedByUserId(userId);
+            }
+        });
+    }
+    getIncompleteTasks(isAdmin, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (isAdmin) {
+                return this.taskRepository.findIncomplete();
+            }
+            else {
+                return this.taskRepository.findIncompleteByUserId(userId);
+            }
         });
     }
     findAllGroupedByUser() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.taskRepository.findAllGroupedByUser();
-        });
-    }
-    getTaskById(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findById(id);
-        });
-    }
-    updateTask(id, data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.update(id, data);
-        });
-    }
-    deleteTask(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.delete(id);
-        });
-    }
-    markTaskAsCompleted(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.markAsCompleted(id);
-        });
-    }
-    getCompletedTasks() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findCompleted();
-        });
-    }
-    getIncompleteTasks() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.taskRepository.findIncomplete();
         });
     }
 }

@@ -54,5 +54,38 @@ class UserService {
             return this.userRepository.findUserWithTasks(id);
         });
     }
+    promoteToAdmin(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.userRepository.findById(userId);
+            if (!user) {
+                return null;
+            }
+            user.isAdmin = true;
+            return yield this.userRepository.update(userId, user);
+        });
+    }
+    hasAdmin() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const admin = yield this.userRepository.findAdmin();
+            return !!admin;
+        });
+    }
+    createDefaultAdmin() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const defaultAdminData = {
+                name: 'Admin',
+                email: 'admin@default.com',
+                password: 'admin',
+                isAdmin: true,
+            };
+            const hashedPassword = yield this.userRepository.hashPassword(defaultAdminData.password);
+            return this.userRepository.createAdmin({
+                name: defaultAdminData.name,
+                email: defaultAdminData.email,
+                password: hashedPassword,
+                isAdmin: defaultAdminData.isAdmin,
+            });
+        });
+    }
 }
 exports.UserService = UserService;

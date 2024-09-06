@@ -81,4 +81,22 @@ export class TaskRepository {
     async findByUserId(userId: number): Promise<Task[]> {
         return this.prismaClient.task.findMany({ where: { userId } });
     }
+
+    async findCompletedByUserId(userId: number): Promise<Task[]> {
+        return this.prismaClient.task.findMany({
+            where: {
+                userId,
+                completed: true,
+            },
+        });
+    }
+
+    async findIncompleteByUserId(userId: number): Promise<Task[]> {
+        return this.prismaClient.task.findMany({
+            where: {
+                userId,
+                completed: false,
+            },
+        });
+    }
 }

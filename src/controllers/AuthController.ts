@@ -22,23 +22,7 @@ export class AuthController {
             console.error('Error during login:', error);
             return response.status(500).json({ message: 'Internal Server Error' });
         }
-    }
-
-    async validateToken(request: Request, response: Response) {
-        try {
-            const token = request.headers['authorization']?.split(' ')[1] as string;
-            const isValid = await this.authService.validateToken(token);
-    
-            if (isValid) {
-                return response.status(200).json({ message: 'Token is valid' });
-            } else {
-                return response.status(401).json({ message: 'Invalid or expired token' });
-            }
-        } catch (error) {
-            console.error('Error validating token:', error);
-            return response.status(500).json({ message: 'Internal Server Error' });
-        }
-    }    
+    }  
 
     async logout(request: Request, response: Response) {
         try {
@@ -53,11 +37,25 @@ export class AuthController {
 
     async listSessions(request: Request, response: Response) {
         try {
-            const sessions = await this.authService.listSessions();
-            return response.status(200).json(sessions);
+            if (request.isAdmin) {
+                const sessions = await this.authService.listSessions();
+                return response.status(200).json(sessions);
+            } else {
+
+                const userId = request.userId;
+                
+                if (typeof userId !== 'number') {
+                    return response.status(400).json({ message: 'User ID is required' });
+                }
+    
+                const sessions = await this.authService.listUserSessions(userId);
+                return response.status(200).json(sessions);
+            }
         } catch (error) {
             console.error('Error listing sessions:', error);
             return response.status(500).json({ message: 'Internal Server Error' });
         }
     }
+    
+    
 }

@@ -20,11 +20,6 @@ class SessionRepository {
             return this.prismaClient.session.create({ data });
         });
     }
-    findSessionByToken(token) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.prismaClient.session.findUnique({ where: { token } });
-        });
-    }
     deleteSession(token) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.prismaClient.session.delete({ where: { token } });
@@ -33,6 +28,15 @@ class SessionRepository {
     listSessions() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.prismaClient.session.findMany();
+        });
+    }
+    listUserSessions(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.prismaClient.session.findMany({
+                where: {
+                    userId: userId,
+                },
+            });
         });
     }
 }

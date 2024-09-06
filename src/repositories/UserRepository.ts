@@ -20,6 +20,18 @@ export class UserRepository {
         });
     }
 
+    async createAdmin(data: { name: string; email: string; password: string; isAdmin: boolean }) {
+        return this.prismaClient.user.create({
+            data,
+        });
+    }
+
+    async findAdmin() {
+        return this.prismaClient.user.findFirst({
+            where: { isAdmin: true },
+        });
+    }
+
     async findAll() {
         return this.prismaClient.user.findMany();
     }

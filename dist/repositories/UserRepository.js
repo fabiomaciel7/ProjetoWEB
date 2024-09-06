@@ -33,6 +33,20 @@ class UserRepository {
             });
         });
     }
+    createAdmin(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.prismaClient.user.create({
+                data,
+            });
+        });
+    }
+    findAdmin() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.prismaClient.user.findFirst({
+                where: { isAdmin: true },
+            });
+        });
+    }
     findAll() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.prismaClient.user.findMany();

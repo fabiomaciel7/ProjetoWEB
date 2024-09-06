@@ -98,5 +98,25 @@ class TaskRepository {
             return this.prismaClient.task.findMany({ where: { userId } });
         });
     }
+    findCompletedByUserId(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.prismaClient.task.findMany({
+                where: {
+                    userId,
+                    completed: true,
+                },
+            });
+        });
+    }
+    findIncompleteByUserId(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.prismaClient.task.findMany({
+                where: {
+                    userId,
+                    completed: false,
+                },
+            });
+        });
+    }
 }
 exports.TaskRepository = TaskRepository;

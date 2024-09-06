@@ -33,25 +33,6 @@ class AuthController {
             }
         });
     }
-    validateToken(request, response) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            try {
-                const token = (_a = request.headers['authorization']) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
-                const isValid = yield this.authService.validateToken(token);
-                if (isValid) {
-                    return response.status(200).json({ message: 'Token is valid' });
-                }
-                else {
-                    return response.status(401).json({ message: 'Invalid or expired token' });
-                }
-            }
-            catch (error) {
-                console.error('Error validating token:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
-            }
-        });
-    }
     logout(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
@@ -69,8 +50,18 @@ class AuthController {
     listSessions(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const sessions = yield this.authService.listSessions();
-                return response.status(200).json(sessions);
+                if (request.isAdmin) {
+                    const sessions = yield this.authService.listSessions();
+                    return response.status(200).json(sessions);
+                }
+                else {
+                    const userId = request.userId;
+                    if (typeof userId !== 'number') {
+                        return response.status(400).json({ message: 'User ID is required' });
+                    }
+                    const sessions = yield this.authService.listUserSessions(userId);
+                    return response.status(200).json(sessions);
+                }
             }
             catch (error) {
                 console.error('Error listing sessions:', error);
