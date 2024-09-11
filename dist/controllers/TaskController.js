@@ -11,6 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskController = void 0;
 const TaskService_1 = require("../services/TaskService");
+const TaskCreateValidation_1 = require("../validation/TaskCreateValidation");
+const TaskUpdateValidation_1 = require("../validation/TaskUpdateValidation");
 class TaskController {
     constructor() {
         this.taskService = new TaskService_1.TaskService();
@@ -21,7 +23,14 @@ class TaskController {
                 if (!request.userId) {
                     return response.status(400).json({ message: 'User ID is required' });
                 }
-                const taskData = request.body;
+                const { error, value } = TaskCreateValidation_1.createTaskSchema.validate(request.body, { abortEarly: false });
+                if (error) {
+                    return response.status(400).json({
+                        message: 'Erro de validação',
+                        details: error.details.map(detail => detail.message),
+                    });
+                }
+                const taskData = value;
                 taskData.userId = request.userId;
                 const task = yield this.taskService.createTask(taskData);
                 return response.status(201).json(task);
@@ -87,8 +96,15 @@ class TaskController {
                 if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
                     return response.status(400).json({ message: 'User ID and admin status are required' });
                 }
+                const { error, value } = TaskUpdateValidation_1.updateTaskSchema.validate(request.body, { abortEarly: false });
+                if (error) {
+                    return response.status(400).json({
+                        message: 'Erro de validação',
+                        details: error.details.map(detail => detail.message),
+                    });
+                }
                 const { id } = request.params;
-                const taskData = request.body;
+                const taskData = value;
                 const task = yield this.taskService.updateTask(parseInt(id), taskData, request.userId, request.isAdmin);
                 return response.json(task);
             }

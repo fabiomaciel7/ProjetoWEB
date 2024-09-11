@@ -22,7 +22,7 @@ model Session {
   id        Int      @id @default(autoincrement())
   token     String   @unique
   userId    Int
-  user      User     @relation("UserSessions", fields: [userId], references: [id])
+  user      User     @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   expiresAt DateTime
 
   @@index([token], name: "token_idx")
