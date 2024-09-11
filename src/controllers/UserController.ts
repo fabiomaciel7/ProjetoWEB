@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
 import { UserDto } from '../dtos/UserDto';
+import { createUserSchema } from '../validation/UserValidation';
 
 export class UserController {
     private userService: UserService;
@@ -11,7 +12,16 @@ export class UserController {
 
     async create(request: Request, response: Response) {
         try {
-            const userData: UserDto = request.body;
+            const { error, value } = createUserSchema.validate(request.body, { abortEarly: false });
+
+            if (error) {
+                return response.status(400).json({ 
+                    message: 'Erro de validação',
+                    details: error.details.map(detail => detail.message),
+                });
+            }
+
+            const userData: UserDto = value;
             const user = await this.userService.createUser(userData);
             return response.status(201).json(user);
         } catch (error: any) {

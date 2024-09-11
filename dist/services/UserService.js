@@ -75,7 +75,7 @@ class UserService {
             const defaultAdminData = {
                 name: 'Admin',
                 email: 'admin@default.com',
-                password: 'admin',
+                password: 'admin123',
                 isAdmin: true,
             };
             const hashedPassword = yield this.userRepository.hashPassword(defaultAdminData.password);

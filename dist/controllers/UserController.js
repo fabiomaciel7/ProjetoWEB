@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const UserService_1 = require("../services/UserService");
+const UserValidation_1 = require("../validation/UserValidation");
 class UserController {
     constructor() {
         this.userService = new UserService_1.UserService();
@@ -18,7 +19,14 @@ class UserController {
     create(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const userData = request.body;
+                const { error, value } = UserValidation_1.createUserSchema.validate(request.body, { abortEarly: false });
+                if (error) {
+                    return response.status(400).json({
+                        message: 'Erro de validação',
+                        details: error.details.map(detail => detail.message),
+                    });
+                }
+                const userData = value;
                 const user = yield this.userService.createUser(userData);
                 return response.status(201).json(user);
             }
