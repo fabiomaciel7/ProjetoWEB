@@ -11,7 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const UserService_1 = require("../services/UserService");
-const UserValidation_1 = require("../validation/UserValidation");
+const UserCreateValidation_1 = require("../validation/UserCreateValidation");
+const UserUpdateValidation_1 = require("../validation/UserUpdateValidation");
 class UserController {
     constructor() {
         this.userService = new UserService_1.UserService();
@@ -19,7 +20,7 @@ class UserController {
     create(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { error, value } = UserValidation_1.createUserSchema.validate(request.body, { abortEarly: false });
+                const { error, value } = UserCreateValidation_1.createUserSchema.validate(request.body, { abortEarly: false });
                 if (error) {
                     return response.status(400).json({
                         message: 'Erro de validação',
@@ -70,6 +71,13 @@ class UserController {
     update(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const { error, value } = UserUpdateValidation_1.updateUserSchema.validate(request.body, { abortEarly: false });
+                if (error) {
+                    return response.status(400).json({
+                        message: 'Erro de validação',
+                        details: error.details.map(detail => detail.message),
+                    });
+                }
                 const { id } = request.params;
                 const userData = request.body;
                 if (parseInt(id) !== request.userId && !request.isAdmin) {

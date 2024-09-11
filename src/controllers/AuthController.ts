@@ -1,6 +1,6 @@
 import { Request, Response} from 'express';
 import { AuthService } from '../services/AuthService';
-import { createUserSchema } from '../validation/AuthValidation';
+import { loginSchema } from '../validation/AuthValidation';
 
 export class AuthController {
     private authService: AuthService;
@@ -12,7 +12,7 @@ export class AuthController {
     async login(request: Request, response: Response) {
         try {
 
-            const { error, value } = createUserSchema.validate(request.body, { abortEarly: false });
+            const { error, value } = loginSchema.validate(request.body, { abortEarly: false });
 
             if (error) {
                 return response.status(400).json({ 

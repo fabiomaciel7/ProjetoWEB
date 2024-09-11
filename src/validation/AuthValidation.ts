@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-export const createUserSchema = Joi.object({
+export const loginSchema = Joi.object({
     email: Joi.string().email().required().messages({
         'string.email': 'Formato de e-mail inválido.',
         'any.required': 'O e-mail é obrigatório.',

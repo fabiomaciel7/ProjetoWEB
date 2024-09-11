@@ -3,15 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginSchema = void 0;
+exports.updateUserSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
-exports.loginSchema = joi_1.default.object({
-    email: joi_1.default.string().email().required().messages({
-        'string.email': 'Formato de e-mail inválido.',
-        'any.required': 'O e-mail é obrigatório.',
+exports.updateUserSchema = joi_1.default.object({
+    name: joi_1.default.string().min(3).optional().messages({
+        'string.base': 'O nome deve ser um texto.',
+        'string.min': 'O nome deve ter pelo menos 3 caracteres.',
     }),
-    password: joi_1.default.string().min(6).required().messages({
+    email: joi_1.default.string().email().optional().messages({
+        'string.email': 'Formato de e-mail inválido.',
+    }),
+    password: joi_1.default.string().min(6).optional().messages({
         'string.min': 'A senha deve ter pelo menos 6 caracteres.',
-        'any.required': 'A senha é obrigatória.',
     }),
 });

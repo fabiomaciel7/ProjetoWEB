@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
 import { UserDto } from '../dtos/UserDto';
-import { createUserSchema } from '../validation/UserValidation';
+import { createUserSchema } from '../validation/UserCreateValidation';
+import { updateUserSchema } from '../validation/UserUpdateValidation';
 
 export class UserController {
     private userService: UserService;
@@ -62,6 +63,16 @@ export class UserController {
 
     async update(request: Request, response: Response) {
         try {
+
+            const { error, value } = updateUserSchema.validate(request.body, { abortEarly: false });
+
+            if (error) {
+                return response.status(400).json({ 
+                    message: 'Erro de validação',
+                    details: error.details.map(detail => detail.message),
+                });
+            }
+
             const { id } = request.params;
             const userData: Partial<UserDto> = request.body;
 

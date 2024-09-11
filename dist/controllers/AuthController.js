@@ -19,7 +19,7 @@ class AuthController {
     login(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { error, value } = AuthValidation_1.createUserSchema.validate(request.body, { abortEarly: false });
+                const { error, value } = AuthValidation_1.loginSchema.validate(request.body, { abortEarly: false });
                 if (error) {
                     return response.status(400).json({
                         message: 'Erro de validação',
