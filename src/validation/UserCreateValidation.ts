@@ -14,4 +14,7 @@ export const createUserSchema = Joi.object({
     'string.min': 'A senha deve ter pelo menos 6 caracteres.',
     'any.required': 'A senha é obrigatória.',
   }),
+  isAdmin: Joi.boolean().optional().messages({
+    'boolean.base': 'Formato de dado inválido para isAdmin'
+  }),
 });

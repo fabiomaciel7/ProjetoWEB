@@ -1,5 +1,6 @@
 import { UserDto } from '../dtos/UserDto';
 import { UserRepository } from '../repositories/UserRepository';
+import { isAdmin } from '../middlewares/AuthMiddleware';
 
 export class UserService {
     private userRepository: UserRepository;
@@ -21,6 +22,7 @@ export class UserService {
             name: data.name,
             email: data.email,
             password: hashedPassword,
+            isAdmin: data.isAdmin,
         });
     }
 

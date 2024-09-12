@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import { isAdmin } from '../middlewares/AuthMiddleware';
 
 export class UserRepository {
     private prismaClient: PrismaClient;
@@ -14,7 +15,7 @@ export class UserRepository {
         });
     }
 
-    async create(data: { name: string; email: string; password: string }) {
+    async create(data: { name: string; email: string; password: string; isAdmin?: boolean }) {
         return this.prismaClient.user.create({
             data,
         });
