@@ -28,21 +28,22 @@ Task-Manager
     npm install
     ```
 
-4. Configure a URL do banco de dados
+4. Configure a URL do banco de dados e o JWT
+
+    Crie um arquivo .env na raiz do projeto e adicione a linha abaixo, substituindo seu_usuario, sua_senha e seu_banco pelas suas informações
   
     ```bash
     DATABASE_URL="postgresql://seu_usuario:sua_senha@localhost:5432/seu_banco"
+    JWT_SECRET=key
     ```
 
-  Crie um arquivo .env na raiz do projeto e adicione a linha acima, substituindo seu_usuario, sua_senha e seu_banco pelas suas informações
-
-5. Execute as migrações do Prisma para criar as tabelas no banco de dados:
+6. Execute as migrações do Prisma para criar as tabelas no banco de dados:
 
     ```bash
     npx prisma migrate dev --name init
     ```
 
-6. Inicie o servidor
+7. Inicie o servidor
 
     ```bash
     npm start
