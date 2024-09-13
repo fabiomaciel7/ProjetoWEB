@@ -39,7 +39,11 @@ describe('User Controller', () => {
     });
 
     afterAll(async () => {
-        await prisma.user.delete({ where: { id: 888 } });
+        await prisma.user.deleteMany({
+            where: {
+                email: { in: ["augusto@teste.com", "admin@teste.com", "fabio@teste.com"] }
+            }
+        });
     });
 
     describe('POST /api/user/create', () => {
