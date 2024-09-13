@@ -1,4 +1,4 @@
-// npm run test para rodas as suites de teste
+// npm run test para executar as suites de teste
 
 import { describe, it, expect, vi, afterEach, afterAll, beforeEach, beforeAll } from 'vitest';
 import request from 'supertest';
