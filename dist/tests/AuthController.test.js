@@ -80,11 +80,18 @@ let userToken;
             (0, vitest_1.expect)(response.status).toBe(200);
             (0, vitest_1.expect)(response.body).toEqual({ message: 'Logout successful' });
         }));
-        (0, vitest_1.it)('deve retornar 500 para logout de um usuário não logado', () => __awaiter(void 0, void 0, void 0, function* () {
+        (0, vitest_1.it)('deve retornar 400 para logout sem token', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
                 .post('/api/logout');
-            (0, vitest_1.expect)(response.status).toBe(500);
-            (0, vitest_1.expect)(response.body).toEqual({ message: 'Internal Server Error' });
+            (0, vitest_1.expect)(response.status).toBe(400);
+            (0, vitest_1.expect)(response.body).toEqual({ message: 'Token não fornecido' });
+        }));
+        (0, vitest_1.it)('deve retornar 404 para logout com token inexistente', () => __awaiter(void 0, void 0, void 0, function* () {
+            const response = yield (0, supertest_1.default)(app_1.default)
+                .post('/api/logout')
+                .set('Authorization', `Bearer tokenFake`);
+            (0, vitest_1.expect)(response.status).toBe(404);
+            (0, vitest_1.expect)(response.body).toEqual({ message: 'Sessão não encontrada' });
         }));
     });
     (0, vitest_1.describe)('GET /api/sessions', () => {

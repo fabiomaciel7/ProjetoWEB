@@ -37,11 +37,22 @@ export class AuthController {
 
     async logout(request: Request, response: Response) {
         try {
-            const token = request.headers['authorization']?.split(' ')[1] as string;
-            await this.authService.logout(token);
-            return response.status(200).json({ message: 'Logout successful' });
+            const authorizationHeader = request.headers['authorization'];
+            if (!authorizationHeader) {
+                return response.status(400).json({ message: 'Token não fornecido' });
+            }
+    
+            const token = authorizationHeader.split(' ')[1] as string;
+            
+            const session = await this.authService.logout(token);
+    
+            if (!session) {
+                return response.status(404).json({ message: 'Sessão não encontrada' });
+            }
+    
+            return response.status(200).json({ message: 'Logout successful'  });
         } catch (error) {
-            console.error('Error logging out:', error);
+            console.error('Erro ao realizar logout:', error);
             return response.status(500).json({ message: 'Internal Server Error' });
         }
     }

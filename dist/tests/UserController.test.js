@@ -42,7 +42,11 @@ const prisma = new client_1.PrismaClient();
         adminToken = userAdminResponse.body.token;
     }));
     (0, vitest_1.afterAll)(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield prisma.user.delete({ where: { id: 888 } });
+        yield prisma.user.deleteMany({
+            where: {
+                email: { in: ["augusto@teste.com", "admin@teste.com", "fabio@teste.com"] }
+            }
+        });
     }));
     (0, vitest_1.describe)('POST /api/user/create', () => {
         (0, vitest_1.it)('deve criar um usuário com sucesso (201)', () => __awaiter(void 0, void 0, void 0, function* () {

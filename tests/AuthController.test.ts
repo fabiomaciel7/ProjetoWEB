@@ -87,13 +87,23 @@ describe('Auth Controller', () => {
             expect(response.body).toEqual({ message: 'Logout successful' });
         });
 
-        it('deve retornar 500 para logout de um usuário não logado', async () => {
+        it('deve retornar 400 para logout sem token', async () => {
             const response = await request(app)
                 .post('/api/logout');
 
-            expect(response.status).toBe(500);
-            expect(response.body).toEqual({ message: 'Internal Server Error' });
+            expect(response.status).toBe(400);
+            expect(response.body).toEqual({ message: 'Token não fornecido' });
         });
+
+        it('deve retornar 404 para logout com token inexistente', async () => {
+            const response = await request(app)
+                .post('/api/logout')
+                .set('Authorization', `Bearer tokenFake`);
+
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual({ message: 'Sessão não encontrada' });
+        });
+
     });
 
     describe('GET /api/sessions', () => {

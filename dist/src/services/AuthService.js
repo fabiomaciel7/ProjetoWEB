@@ -45,7 +45,12 @@ class AuthService {
     }
     logout(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.sessionRepository.deleteSession(token);
+            const session = yield this.sessionRepository.findSessionByToken(token);
+            if (!session) {
+                return null;
+            }
+            yield this.sessionRepository.deleteSession(token);
+            return session;
         });
     }
     listSessions() {

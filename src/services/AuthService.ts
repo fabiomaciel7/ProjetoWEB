@@ -36,7 +36,14 @@ export class AuthService {
     }
 
     async logout(token: string) {
-        return await this.sessionRepository.deleteSession(token);
+        const session = await this.sessionRepository.findSessionByToken(token);
+    
+        if (!session) {
+            return null;
+        }
+        
+        await this.sessionRepository.deleteSession(token);
+        return session;
     }
 
     async listSessions() {
