@@ -5,11 +5,12 @@
       "strict": true,
       "esModuleInterop": true,
       "skipLibCheck": true,
-      "outDir": "./dist"
+      "outDir": "./dist",
+      "types": ["vitest","node"]
     },
 
     "include": [
-        "./**/*.ts", "server.js"
+        "./**/*.ts", "server.js", "tests"
     ],
 
     "exclude": [
