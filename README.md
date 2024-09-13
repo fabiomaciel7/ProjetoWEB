@@ -50,6 +50,14 @@ Task-Manager
 
 A API estará disponível em http://localhost:3000.
 
+# Testes
+
+Para rodar os testes:
+
+```bash
+npm run test
+```
+
 # Swagger
 
 A documentação da API está disponível em [Swagger](https://app.swaggerhub.com/apis/FABIOMACIEL/Task-Manager/1.0.0) com todos os detalhes sobre os endpoints e os dados esperados.
