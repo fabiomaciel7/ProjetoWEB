@@ -22,18 +22,25 @@ const prisma = new client_1.PrismaClient();
 let hashedPassword;
 let adminPassword;
 let userToken;
+let adminId;
+let userId;
 (0, vitest_1.describe)('Auth Controller', () => {
     (0, vitest_1.beforeAll)(() => __awaiter(void 0, void 0, void 0, function* () {
         hashedPassword = yield bcrypt_1.default.hash("augusto123", 10);
         adminPassword = yield bcrypt_1.default.hash("admin123", 10);
-        let userData = { id: 777, name: "Augusto", email: "augusto2@teste.com", password: hashedPassword, isAdmin: false };
+        let userData = { name: "Augusto", email: "augusto2@teste.com", password: hashedPassword, isAdmin: false };
         yield prisma.user.create({ data: userData });
-        let adminData = { id: 666, name: "Admin", email: "admin2@teste.com", password: adminPassword, isAdmin: true };
+        const user = yield prisma.user.findUnique({
+            where: { email: "augusto2@teste.com" },
+            select: { id: true },
+        });
+        userId = user === null || user === void 0 ? void 0 : user.id;
+        let adminData = { name: "Admin", email: "admin2@teste.com", password: adminPassword, isAdmin: true };
         yield prisma.user.create({ data: adminData });
     }));
     (0, vitest_1.afterAll)(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield prisma.user.delete({ where: { id: 777 } });
-        yield prisma.user.delete({ where: { id: 666 } });
+        yield prisma.user.delete({ where: { email: "augusto2@teste.com" } });
+        yield prisma.user.delete({ where: { email: "admin2@teste.com" } });
     }));
     (0, vitest_1.describe)('POST /api/login', () => {
         (0, vitest_1.it)('deve retornar 200 para login válido', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -122,7 +129,7 @@ let userToken;
             (0, vitest_1.expect)(response.status).toBe(200);
             (0, vitest_1.expect)(response.body).toBeInstanceOf(Array);
             (0, vitest_1.expect)(response.body.length).toBe(1);
-            (0, vitest_1.expect)(response.body[0].userId).toBe(777);
+            (0, vitest_1.expect)(response.body[0].userId).toBe(userId);
         }));
     });
 });

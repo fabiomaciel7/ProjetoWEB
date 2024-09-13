@@ -14,16 +14,32 @@ describe('User Controller', () => {
     let userToken: string;
     let adminToken: string;
     let userCreatedId: number;
+    let userId: number | undefined;
+    let adminId: number | undefined;
 
     beforeAll(async () => {
         hashedPassword = await bcrypt.hash("augusto123", 10);
         adminPassword = await bcrypt.hash("admin123", 10);
 
-        let userData = { id: 999, name: "Augusto", email: "augusto@teste.com", password: hashedPassword, isAdmin: false };
+        let userData = { name: "Augusto", email: "augusto@teste.com", password: hashedPassword, isAdmin: false };
         await prisma.user.create({ data: userData });
 
-        let adminData = { id: 888, name: "Admin", email: "admin@teste.com", password: adminPassword, isAdmin: true };
+        const user =  await prisma.user.findUnique({
+            where: { email: "augusto@teste.com" },
+            select: { id: true },
+        });
+
+        userId = user?.id;
+
+        let adminData = {name: "Admin", email: "admin@teste.com", password: adminPassword, isAdmin: true };
         await prisma.user.create({ data: adminData });
+
+        const admin =  await prisma.user.findUnique({
+            where: { email: "admin@teste.com" },
+            select: { id: true },
+        });
+
+        adminId = admin?.id;
 
         const userLoginResponse = await request(app)
             .post('/api/login')
@@ -119,12 +135,12 @@ describe('User Controller', () => {
     describe('GET /api/user/:id', () => {
         it('deve retornar o perfil do próprio usuário (200)', async () => {
             const response = await request(app)
-                .get(`/api/user/${999}`)
+                .get(`/api/user/${userId}`)
                 .set('Authorization', `Bearer ${userToken}`);
 
             expect(response.status).toBe(200);
             expect(response.body).toEqual(expect.objectContaining({
-                id: 999,
+                id: userId,
                 name: 'Augusto',
                 email: 'augusto@teste.com',
             }));
@@ -132,7 +148,7 @@ describe('User Controller', () => {
 
         it('deve retornar 403 ao tentar ver o perfil de outro usuário', async () => {
             const response = await request(app)
-                .get(`/api/user/${888}`)
+                .get(`/api/user/${adminId}`)
                 .set('Authorization', `Bearer ${userToken}`);
 
             expect(response.status).toBe(403);
@@ -143,7 +159,7 @@ describe('User Controller', () => {
     describe('PUT /api/user/update/:id', () => {
         it('deve permitir a edição do próprio perfil (200)', async () => {
             const response = await request(app)
-                .put(`/api/user/update/${999}`)
+                .put(`/api/user/update/${userId}`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
                     name: 'Augusto Atualizado',
@@ -160,7 +176,7 @@ describe('User Controller', () => {
 
         it('deve retornar 403 ao tentar editar o perfil de outro usuário', async () => {
             const response = await request(app)
-                .put(`/api/user/update/${888}`)
+                .put(`/api/user/update/${adminId}`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
                     name: 'Alteração Indevida',
@@ -174,7 +190,7 @@ describe('User Controller', () => {
 
         it('deve retornar 400 ao tentar editar com um email inválido', async () => {
             const response = await request(app)
-                .put(`/api/user/update/${999}`)
+                .put(`/api/user/update/${userId}`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
                     name: 'Augusto Atualizado',
@@ -217,7 +233,7 @@ describe('User Controller', () => {
 
         it('deve retornar 403 ao tentar excluir o perfil de outro usuário', async () => {
             const response = await request(app)
-                .delete(`/api/user/delete/${888}`)
+                .delete(`/api/user/delete/${adminId}`)
                 .set('Authorization', `Bearer ${userToken}`);
 
             expect(response.status).toBe(403);
@@ -226,7 +242,7 @@ describe('User Controller', () => {
 
         it('deve permitir que o usuário exclua o próprio perfil (204)', async () => {
             const response = await request(app)
-                .delete(`/api/user/delete/${999}`)
+                .delete(`/api/user/delete/${userId}`)
                 .set('Authorization', `Bearer ${userToken}`);
 
             expect(response.status).toBe(204);

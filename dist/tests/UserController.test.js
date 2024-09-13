@@ -25,13 +25,25 @@ const prisma = new client_1.PrismaClient();
     let userToken;
     let adminToken;
     let userCreatedId;
+    let userId;
+    let adminId;
     (0, vitest_1.beforeAll)(() => __awaiter(void 0, void 0, void 0, function* () {
         hashedPassword = yield bcrypt_1.default.hash("augusto123", 10);
         adminPassword = yield bcrypt_1.default.hash("admin123", 10);
-        let userData = { id: 999, name: "Augusto", email: "augusto@teste.com", password: hashedPassword, isAdmin: false };
+        let userData = { name: "Augusto", email: "augusto@teste.com", password: hashedPassword, isAdmin: false };
         yield prisma.user.create({ data: userData });
-        let adminData = { id: 888, name: "Admin", email: "admin@teste.com", password: adminPassword, isAdmin: true };
+        const user = yield prisma.user.findUnique({
+            where: { email: "augusto@teste.com" },
+            select: { id: true },
+        });
+        userId = user === null || user === void 0 ? void 0 : user.id;
+        let adminData = { name: "Admin", email: "admin@teste.com", password: adminPassword, isAdmin: true };
         yield prisma.user.create({ data: adminData });
+        const admin = yield prisma.user.findUnique({
+            where: { email: "admin@teste.com" },
+            select: { id: true },
+        });
+        adminId = admin === null || admin === void 0 ? void 0 : admin.id;
         const userLoginResponse = yield (0, supertest_1.default)(app_1.default)
             .post('/api/login')
             .send({ email: "augusto@teste.com", password: "augusto123" });
@@ -108,18 +120,18 @@ const prisma = new client_1.PrismaClient();
     (0, vitest_1.describe)('GET /api/user/:id', () => {
         (0, vitest_1.it)('deve retornar o perfil do próprio usuário (200)', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
-                .get(`/api/user/${999}`)
+                .get(`/api/user/${userId}`)
                 .set('Authorization', `Bearer ${userToken}`);
             (0, vitest_1.expect)(response.status).toBe(200);
             (0, vitest_1.expect)(response.body).toEqual(vitest_1.expect.objectContaining({
-                id: 999,
+                id: userId,
                 name: 'Augusto',
                 email: 'augusto@teste.com',
             }));
         }));
         (0, vitest_1.it)('deve retornar 403 ao tentar ver o perfil de outro usuário', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
-                .get(`/api/user/${888}`)
+                .get(`/api/user/${adminId}`)
                 .set('Authorization', `Bearer ${userToken}`);
             (0, vitest_1.expect)(response.status).toBe(403);
             (0, vitest_1.expect)(response.body).toEqual({ message: 'Acesso negado' });
@@ -128,7 +140,7 @@ const prisma = new client_1.PrismaClient();
     (0, vitest_1.describe)('PUT /api/user/update/:id', () => {
         (0, vitest_1.it)('deve permitir a edição do próprio perfil (200)', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
-                .put(`/api/user/update/${999}`)
+                .put(`/api/user/update/${userId}`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
                 name: 'Augusto Atualizado',
@@ -143,7 +155,7 @@ const prisma = new client_1.PrismaClient();
         }));
         (0, vitest_1.it)('deve retornar 403 ao tentar editar o perfil de outro usuário', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
-                .put(`/api/user/update/${888}`)
+                .put(`/api/user/update/${adminId}`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
                 name: 'Alteração Indevida',
@@ -155,7 +167,7 @@ const prisma = new client_1.PrismaClient();
         }));
         (0, vitest_1.it)('deve retornar 400 ao tentar editar com um email inválido', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
-                .put(`/api/user/update/${999}`)
+                .put(`/api/user/update/${userId}`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
                 name: 'Augusto Atualizado',
@@ -191,14 +203,14 @@ const prisma = new client_1.PrismaClient();
     (0, vitest_1.describe)('DELETE /api/user/delete/:id', () => {
         (0, vitest_1.it)('deve retornar 403 ao tentar excluir o perfil de outro usuário', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
-                .delete(`/api/user/delete/${888}`)
+                .delete(`/api/user/delete/${adminId}`)
                 .set('Authorization', `Bearer ${userToken}`);
             (0, vitest_1.expect)(response.status).toBe(403);
             (0, vitest_1.expect)(response.body).toEqual({ message: 'Acesso negado' });
         }));
         (0, vitest_1.it)('deve permitir que o usuário exclua o próprio perfil (204)', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
-                .delete(`/api/user/delete/${999}`)
+                .delete(`/api/user/delete/${userId}`)
                 .set('Authorization', `Bearer ${userToken}`);
             (0, vitest_1.expect)(response.status).toBe(204);
         }));

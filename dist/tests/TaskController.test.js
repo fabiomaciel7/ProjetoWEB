@@ -28,8 +28,8 @@ const prisma = new client_1.PrismaClient();
         const adminPassword = yield bcrypt_1.default.hash("admin123", 10);
         yield prisma.user.createMany({
             data: [
-                { id: 1000, name: "Augusto", email: "augusto3@teste.com", password: hashedPassword, isAdmin: false },
-                { id: 1001, name: "Admin", email: "admin3@teste.com", password: adminPassword, isAdmin: true }
+                { id: 99999, name: "Augusto", email: "augusto3@teste.com", password: hashedPassword, isAdmin: false },
+                { id: 88888, name: "Admin", email: "admin3@teste.com", password: adminPassword, isAdmin: true }
             ]
         });
         const userLoginResponse = yield (0, supertest_1.default)(app_1.default)
@@ -94,7 +94,7 @@ const prisma = new client_1.PrismaClient();
                 data: {
                     title: 'Test Task',
                     description: 'Task for testing',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;
@@ -117,7 +117,7 @@ const prisma = new client_1.PrismaClient();
             (0, vitest_1.expect)(response.status).toBe(200);
             (0, vitest_1.expect)(response.body).toBeInstanceOf(Array);
             response.body.forEach((task) => {
-                (0, vitest_1.expect)(task.userId).toBe(1000);
+                (0, vitest_1.expect)(task.userId).toBe(99999);
             });
         }));
     });
@@ -127,7 +127,7 @@ const prisma = new client_1.PrismaClient();
                 data: {
                     title: 'Test Task',
                     description: 'Task for testing',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;
@@ -149,7 +149,7 @@ const prisma = new client_1.PrismaClient();
                 data: {
                     title: 'Task to update',
                     description: 'Task to be updated',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;
@@ -188,7 +188,7 @@ const prisma = new client_1.PrismaClient();
                 data: {
                     title: 'Task to complete',
                     description: 'Task to be completed',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;
@@ -227,7 +227,7 @@ const prisma = new client_1.PrismaClient();
                 data: {
                     title: 'Task to delete',
                     description: 'Task to be deleted',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;

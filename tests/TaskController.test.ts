@@ -19,8 +19,8 @@ describe('Task Controller', () => {
 
         await prisma.user.createMany({
             data: [
-                { id: 1000, name: "Augusto", email: "augusto3@teste.com", password: hashedPassword, isAdmin: false },
-                { id: 1001, name: "Admin", email: "admin3@teste.com", password: adminPassword, isAdmin: true }
+                { id: 99999, name: "Augusto", email: "augusto3@teste.com", password: hashedPassword, isAdmin: false },
+                { id: 88888, name: "Admin", email: "admin3@teste.com", password: adminPassword, isAdmin: true }
             ]
         });
 
@@ -96,7 +96,7 @@ describe('Task Controller', () => {
                 data: {
                     title: 'Test Task',
                     description: 'Task for testing',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;
@@ -124,7 +124,7 @@ describe('Task Controller', () => {
             expect(response.status).toBe(200);
             expect(response.body).toBeInstanceOf(Array);
             response.body.forEach((task: any) => {
-                expect(task.userId).toBe(1000);
+                expect(task.userId).toBe(99999);
             });
         });
     });
@@ -135,7 +135,7 @@ describe('Task Controller', () => {
                 data: {
                     title: 'Test Task',
                     description: 'Task for testing',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;
@@ -161,7 +161,7 @@ describe('Task Controller', () => {
                 data: {
                     title: 'Task to update',
                     description: 'Task to be updated',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;
@@ -206,7 +206,7 @@ describe('Task Controller', () => {
                 data: {
                     title: 'Task to complete',
                     description: 'Task to be completed',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;
@@ -253,7 +253,7 @@ describe('Task Controller', () => {
                 data: {
                     title: 'Task to delete',
                     description: 'Task to be deleted',
-                    userId: 1000,
+                    userId: 99999,
                 }
             });
             taskId = newTask.id;
