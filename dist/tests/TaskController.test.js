@@ -220,6 +220,13 @@ const prisma = new client_1.PrismaClient();
                 .set('Authorization', `Bearer ${adminToken}`);
             (0, vitest_1.expect)(response.status).toBe(200);
         }));
+        (0, vitest_1.it)('deve retornar todas as tasks agrupadas por usuário (usuario comum)', () => __awaiter(void 0, void 0, void 0, function* () {
+            const response = yield (0, supertest_1.default)(app_1.default)
+                .get('/api/tasks/byuser')
+                .set('Authorization', `Bearer ${userToken}`);
+            (0, vitest_1.expect)(response.status).toBe(403);
+            (0, vitest_1.expect)(response.body).toEqual({ message: 'Acesso negado' });
+        }));
     });
     (0, vitest_1.describe)('DELETE /task/delete/:id', () => {
         (0, vitest_1.beforeEach)(() => __awaiter(void 0, void 0, void 0, function* () {

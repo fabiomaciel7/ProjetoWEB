@@ -245,6 +245,16 @@ describe('Task Controller', () => {
     
           expect(response.status).toBe(200);
         });
+
+        it('deve retornar todas as tasks agrupadas por usuário (usuario comum)', async () => {
+            const response = await request(app)
+              .get('/api/tasks/byuser')
+              .set('Authorization', `Bearer ${userToken}`);
+      
+            expect(response.status).toBe(403);
+            expect(response.body).toEqual({ message: 'Acesso negado' });
+          });
+
     });
 
     describe('DELETE /task/delete/:id', () => {
