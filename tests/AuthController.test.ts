@@ -57,7 +57,7 @@ describe('Auth Controller', () => {
                 .send({ email: "augusto2@teste.com", password: "senhaErrada" });
 
             expect(response.status).toBe(401);
-            expect(response.body).toEqual({ message: 'Invalid credentials' });
+            expect(response.body).toEqual({ message: 'Credenciais Inválidas' });
         });
 
         it('deve retornar 400 quando o email não é fornecido', async () => {
@@ -93,7 +93,7 @@ describe('Auth Controller', () => {
                 .set('Authorization', `Bearer ${userToken}`);
 
             expect(response.status).toBe(200);
-            expect(response.body).toEqual({ message: 'Logout successful' });
+            expect(response.body).toEqual({ message: 'Logout realizado com sucesso' });
         });
 
         it('deve retornar 400 para logout sem token', async () => {

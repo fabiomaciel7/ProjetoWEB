@@ -25,13 +25,13 @@ export class AuthController {
             const result = await this.authService.login(email, password);
 
             if (result.success) {
-                return response.json({ message: 'Login successful', token: result.token });
+                return response.json({ message: 'Login realizado com sucesso!', token: result.token });
             } else {
-                return response.status(401).json({ message: 'Invalid credentials' });
+                return response.status(401).json({ message: 'Credenciais Inválidas' });
             }
         } catch (error) {
             console.error('Error during login:', error);
-            return response.status(500).json({ message: 'Internal Server Error' });
+            return response.status(500).json({ message: 'Erro interno do servidor' });
         }
     }  
 
@@ -50,10 +50,10 @@ export class AuthController {
                 return response.status(404).json({ message: 'Sessão não encontrada' });
             }
     
-            return response.status(200).json({ message: 'Logout successful'  });
+            return response.status(200).json({ message: 'Logout realizado com sucesso'  });
         } catch (error) {
             console.error('Erro ao realizar logout:', error);
-            return response.status(500).json({ message: 'Internal Server Error' });
+            return response.status(500).json({ message: 'Erro interno do servidor' });
         }
     }
 
@@ -67,15 +67,15 @@ export class AuthController {
                 const userId = request.userId;
                 
                 if (typeof userId !== 'number') {
-                    return response.status(400).json({ message: 'User ID is required' });
+                    return response.status(400).json({ message: 'ID do usuário é obrigatório' });
                 }
     
                 const sessions = await this.authService.listUserSessions(userId);
                 return response.status(200).json(sessions);
             }
         } catch (error) {
-            console.error('Error listing sessions:', error);
-            return response.status(500).json({ message: 'Internal Server Error' });
+            console.error('Erro ao listar sessões:', error);
+            return response.status(500).json({ message: 'Erro interno do servidor' });
         }
     }
     

@@ -56,7 +56,7 @@ let userId;
                 .post('/api/login')
                 .send({ email: "augusto2@teste.com", password: "senhaErrada" });
             (0, vitest_1.expect)(response.status).toBe(401);
-            (0, vitest_1.expect)(response.body).toEqual({ message: 'Invalid credentials' });
+            (0, vitest_1.expect)(response.body).toEqual({ message: 'Credenciais Inválidas' });
         }));
         (0, vitest_1.it)('deve retornar 400 quando o email não é fornecido', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
@@ -85,7 +85,7 @@ let userId;
                 .post('/api/logout')
                 .set('Authorization', `Bearer ${userToken}`);
             (0, vitest_1.expect)(response.status).toBe(200);
-            (0, vitest_1.expect)(response.body).toEqual({ message: 'Logout successful' });
+            (0, vitest_1.expect)(response.body).toEqual({ message: 'Logout realizado com sucesso' });
         }));
         (0, vitest_1.it)('deve retornar 400 para logout sem token', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)

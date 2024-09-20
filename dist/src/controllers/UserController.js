@@ -32,7 +32,7 @@ class UserController {
                 return response.status(201).json(user);
             }
             catch (error) {
-                console.error('Error creating user:', error);
+                console.error('Erro na criação de usuário:', error);
                 return response.status(400).json({ message: error.message });
             }
         });
@@ -44,8 +44,8 @@ class UserController {
                 return response.json(users);
             }
             catch (error) {
-                console.error('Error getting users:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao listar usuários:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -58,13 +58,13 @@ class UserController {
                 }
                 const user = yield this.userService.getUserById(parseInt(id));
                 if (!user) {
-                    return response.status(404).json({ message: 'User not found' });
+                    return response.status(404).json({ message: 'Usuário não encontrado' });
                 }
                 return response.json(user);
             }
             catch (error) {
-                console.error('Error getting user by ID:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao visualizar usuário pelo ID:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -87,7 +87,7 @@ class UserController {
                 return response.json(user);
             }
             catch (error) {
-                console.error('Error updating user:', error);
+                console.error('Erro ao atualizar o ID:', error);
                 return response.status(400).json({ message: error.message });
             }
         });
@@ -103,8 +103,8 @@ class UserController {
                 return response.status(204).send();
             }
             catch (error) {
-                console.error('Error deleting user:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao deletar usuário:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -113,17 +113,17 @@ class UserController {
             try {
                 const { id } = request.params;
                 if (!request.isAdmin) {
-                    return response.status(403).json({ message: 'Access denied' });
+                    return response.status(403).json({ message: 'Access negado' });
                 }
                 const updatedUser = yield this.userService.promoteToAdmin(parseInt(id));
                 if (!updatedUser) {
-                    return response.status(404).json({ message: 'User not found' });
+                    return response.status(404).json({ message: 'Usuário não existe' });
                 }
                 return response.status(200).json(updatedUser);
             }
             catch (error) {
-                console.error('Error promoting user to admin:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao promover usuário para Admin:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }

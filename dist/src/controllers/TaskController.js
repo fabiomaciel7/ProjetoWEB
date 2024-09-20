@@ -21,7 +21,7 @@ class TaskController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!request.userId) {
-                    return response.status(400).json({ message: 'User ID is required' });
+                    return response.status(400).json({ message: 'ID do usuário é obrigatório' });
                 }
                 const { error, value } = TaskCreateValidation_1.createTaskSchema.validate(request.body, { abortEarly: false });
                 if (error) {
@@ -36,8 +36,8 @@ class TaskController {
                 return response.status(201).json(task);
             }
             catch (error) {
-                console.error('Error creating task:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao criar tarefa:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -51,8 +51,8 @@ class TaskController {
                 return response.json(tasks);
             }
             catch (error) {
-                console.error('Error getting tasks:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao obter tarefas:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -66,8 +66,8 @@ class TaskController {
                 return response.json(tasksGrouped);
             }
             catch (error) {
-                console.error('Error getting tasks grouped by user:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao obter tarefas agrupadas por usuário:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -75,18 +75,18 @@ class TaskController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
-                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                    return response.status(400).json({ message: 'ID do usuário e status de administrador são obrigatórios' });
                 }
                 const { id } = request.params;
                 const task = yield this.taskService.getTaskById(parseInt(id), request.userId, request.isAdmin);
                 if (!task) {
-                    return response.status(404).json({ message: 'Task not found or access denied' });
+                    return response.status(404).json({ message: 'Task não encontrada' });
                 }
                 return response.json(task);
             }
             catch (error) {
-                console.error('Error getting task by ID:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao obter tarefa por ID:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -94,7 +94,7 @@ class TaskController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
-                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                    return response.status(400).json({ message: 'ID do usuário e status de administrador são obrigatórios' });
                 }
                 const { error, value } = TaskUpdateValidation_1.updateTaskSchema.validate(request.body, { abortEarly: false });
                 if (error) {
@@ -109,8 +109,8 @@ class TaskController {
                 return response.json(task);
             }
             catch (error) {
-                console.error('Error updating task:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao atualizar tarefa:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -118,15 +118,15 @@ class TaskController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
-                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                    return response.status(400).json({ message: 'ID do usuário e status de administrador são obrigatórios' });
                 }
                 const { id } = request.params;
                 yield this.taskService.deleteTask(parseInt(id), request.userId, request.isAdmin);
                 return response.status(204).send();
             }
             catch (error) {
-                console.error('Error deleting task:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao deletar tarefa:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -134,15 +134,15 @@ class TaskController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
-                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                    return response.status(400).json({ message: 'ID do usuário e status de administrador são obrigatórios' });
                 }
                 const { id } = request.params;
                 const task = yield this.taskService.markTaskAsCompleted(parseInt(id), request.userId, request.isAdmin);
                 return response.json(task);
             }
             catch (error) {
-                console.error('Error marking task as completed:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao marcar tarefa como concluída:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -150,14 +150,14 @@ class TaskController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
-                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                    return response.status(400).json({ message: 'ID do usuário e status de administrador são obrigatórios' });
                 }
                 const tasks = yield this.taskService.getCompletedTasks(request.isAdmin, request.userId);
                 return response.json(tasks);
             }
             catch (error) {
-                console.error('Error getting completed tasks:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao obter tarefas concluídas:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
@@ -165,14 +165,14 @@ class TaskController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
-                    return response.status(400).json({ message: 'User ID and admin status are required' });
+                    return response.status(400).json({ message: 'ID do usuário e status de administrador são obrigatórios' });
                 }
                 const tasks = yield this.taskService.getIncompleteTasks(request.isAdmin, request.userId);
                 return response.json(tasks);
             }
             catch (error) {
-                console.error('Error getting incomplete tasks:', error);
-                return response.status(500).json({ message: 'Internal Server Error' });
+                console.error('Erro ao obter tarefas incompletas:', error);
+                return response.status(500).json({ message: 'Erro interno do servidor' });
             }
         });
     }
