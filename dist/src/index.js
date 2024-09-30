@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const database_1 = require("./config/database");
 const UserService_1 = require("./services/UserService");
-const port = 3000;
+const port = 3001;
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

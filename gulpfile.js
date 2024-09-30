@@ -31,7 +31,7 @@ gulp.task('copy-files', () => {
 gulp.task('watch', (done) => {
    gulp.watch('./**/*.ts')
    nodemon({
-       script: 'dist/index.js',
+       script: 'dist/src/index.js',
        tasks: ['build'],
        ext: 'ts json',
        ignore: ['node_modules/', 'package.json', 'tsconfig.json']

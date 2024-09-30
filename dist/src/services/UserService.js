@@ -26,7 +26,6 @@ class UserService {
                 name: data.name,
                 email: data.email,
                 password: hashedPassword,
-                isAdmin: data.isAdmin,
             });
         });
     }

@@ -1,10 +1,16 @@
 import express from 'express';
 import path from 'path';
+import cors from 'cors';
 import userRoutes from './routes/UserRoutes';
 import taskRoutes from './routes/TaskRoutes';
 import authRoutes from './routes/AuthRoutes';
 
 const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+}));
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
