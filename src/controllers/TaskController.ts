@@ -130,16 +130,20 @@ export class TaskController {
 
     async markAsCompleted(request: Request, response: Response) {
         try {
-            if (typeof request.userId === 'undefined' || typeof request.isAdmin === 'undefined') {
+            const { id } = request.params;
+            const { completed } = request.body; // Captura o status do checkbox do front-end
+            const userId = request.userId;
+            const isAdmin = request.isAdmin;
+    
+            if (typeof userId === 'undefined' || typeof isAdmin === 'undefined') {
                 return response.status(400).json({ message: 'ID do usuário e status de administrador são obrigatórios' });
             }
-
-            const { id } = request.params;
-            const task = await this.taskService.markTaskAsCompleted(parseInt(id), request.userId, request.isAdmin);
-
+    
+            const task = await this.taskService.markTaskAsCompleted(parseInt(id), userId, isAdmin, completed);
+    
             return response.json(task);
         } catch (error) {
-            console.error('Erro ao marcar tarefa como concluída:', error);
+            console.error('Erro ao atualizar status da tarefa:', error);
             return response.status(500).json({ message: 'Erro interno do servidor' });
         }
     }

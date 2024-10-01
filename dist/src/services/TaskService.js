@@ -57,12 +57,12 @@ class TaskService {
             return this.taskRepository.delete(id);
         });
     }
-    markTaskAsCompleted(id, userId, isAdmin) {
+    markTaskAsCompleted(id, userId, isAdmin, completed) {
         return __awaiter(this, void 0, void 0, function* () {
             const task = yield this.getTaskById(id, userId, isAdmin);
             if (!task)
-                throw new Error('Task not found or access denied');
-            return this.taskRepository.markAsCompleted(id);
+                throw new Error('Task não encontrada ou acesso negado');
+            return this.taskRepository.markAsCompleted(id, completed);
         });
     }
     getCompletedTasks(isAdmin, userId) {

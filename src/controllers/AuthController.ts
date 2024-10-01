@@ -25,7 +25,7 @@ export class AuthController {
             const result = await this.authService.login(email, password);
 
             if (result.success) {
-                return response.json({ message: 'Login realizado com sucesso!', token: result.token });
+                return response.json({ message: 'Login realizado com sucesso!', token: result.token, id: result.id });
             } else {
                 return response.status(401).json({ message: 'Credenciais Inválidas' });
             }

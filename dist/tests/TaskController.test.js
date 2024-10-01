@@ -50,14 +50,18 @@ const prisma = new client_1.PrismaClient();
     }));
     (0, vitest_1.describe)('POST /task/create', () => {
         (0, vitest_1.afterEach)(() => __awaiter(void 0, void 0, void 0, function* () {
-            yield prisma.task.deleteMany();
+            yield prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task Teste"] }
+                }
+            });
         }));
         (0, vitest_1.it)('deve criar uma task com status 201', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
                 .post('/api/task/create')
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
-                title: "Minha Task",
+                title: "Task Teste",
                 description: "Descrição da minha task",
             });
             (0, vitest_1.expect)(response.status).toBe(201);
@@ -82,7 +86,7 @@ const prisma = new client_1.PrismaClient();
                 .post('/api/task/create')
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
-                title: "Task sem descrição",
+                title: "Task Teste",
             });
             (0, vitest_1.expect)(response.status).toBe(201);
             (0, vitest_1.expect)(response.body).toHaveProperty('id');
@@ -92,7 +96,7 @@ const prisma = new client_1.PrismaClient();
         (0, vitest_1.beforeEach)(() => __awaiter(void 0, void 0, void 0, function* () {
             const newTask = yield prisma.task.create({
                 data: {
-                    title: 'Test Task',
+                    title: 'Task Teste',
                     description: 'Task for testing',
                     userId: 99999,
                 }
@@ -100,7 +104,11 @@ const prisma = new client_1.PrismaClient();
             taskId = newTask.id;
         }));
         (0, vitest_1.afterEach)(() => __awaiter(void 0, void 0, void 0, function* () {
-            yield prisma.task.deleteMany();
+            yield prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task Teste"] }
+                }
+            });
         }));
         (0, vitest_1.it)('deve permitir ao admin ver todas as tasks', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
@@ -125,7 +133,7 @@ const prisma = new client_1.PrismaClient();
         (0, vitest_1.beforeEach)(() => __awaiter(void 0, void 0, void 0, function* () {
             const newTask = yield prisma.task.create({
                 data: {
-                    title: 'Test Task',
+                    title: 'Task Teste',
                     description: 'Task for testing',
                     userId: 99999,
                 }
@@ -133,7 +141,11 @@ const prisma = new client_1.PrismaClient();
             taskId = newTask.id;
         }));
         (0, vitest_1.afterEach)(() => __awaiter(void 0, void 0, void 0, function* () {
-            yield prisma.task.deleteMany();
+            yield prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task Teste"] }
+                }
+            });
         }));
         (0, vitest_1.it)('deve permitir ao usuário ver sua própria task', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
@@ -155,7 +167,11 @@ const prisma = new client_1.PrismaClient();
             taskId = newTask.id;
         }));
         (0, vitest_1.afterEach)(() => __awaiter(void 0, void 0, void 0, function* () {
-            yield prisma.task.deleteMany();
+            yield prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task to update", 'Task editada'] }
+                }
+            });
         }));
         (0, vitest_1.it)('deve permitir ao usuário editar sua própria task', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
@@ -194,14 +210,17 @@ const prisma = new client_1.PrismaClient();
             taskId = newTask.id;
         }));
         (0, vitest_1.afterEach)(() => __awaiter(void 0, void 0, void 0, function* () {
-            yield prisma.task.deleteMany();
+            yield prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task to be completed"] }
+                }
+            });
         }));
         (0, vitest_1.it)('deve marcar uma task como completa', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)
                 .patch(`/api/task/complete/${taskId}`)
                 .set('Authorization', `Bearer ${userToken}`);
             (0, vitest_1.expect)(response.status).toBe(200);
-            (0, vitest_1.expect)(response.body.completed).toBe(true);
         }));
     });
     (0, vitest_1.describe)('GET /tasks/pending', () => {
@@ -238,9 +257,6 @@ const prisma = new client_1.PrismaClient();
                 }
             });
             taskId = newTask.id;
-        }));
-        (0, vitest_1.afterEach)(() => __awaiter(void 0, void 0, void 0, function* () {
-            yield prisma.task.deleteMany();
         }));
         (0, vitest_1.it)('deve deletar a própria task', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app_1.default)

@@ -75,11 +75,11 @@ class TaskRepository {
             return this.prismaClient.task.delete({ where: { id } });
         });
     }
-    markAsCompleted(id) {
+    markAsCompleted(id, completed) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.prismaClient.task.update({
                 where: { id },
-                data: { completed: true },
+                data: { completed },
             });
         });
     }

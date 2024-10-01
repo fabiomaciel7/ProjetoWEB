@@ -63,10 +63,10 @@ export class TaskRepository {
         return this.prismaClient.task.delete({ where: { id } });
     }
 
-    async markAsCompleted(id: number): Promise<Task> {
+    async markAsCompleted(id: number, completed: boolean): Promise<Task> {
         return this.prismaClient.task.update({
             where: { id },
-            data: { completed: true },
+            data: { completed },
         });
     }
 

@@ -36,7 +36,7 @@ class AuthService {
                     userId: user.id,
                     expiresAt: new Date(Date.now() + 3600 * 1000),
                 });
-                return { success: true, token };
+                return { success: true, token, id: user.id };
             }
             else {
                 return { success: false };

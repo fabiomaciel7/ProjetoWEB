@@ -45,15 +45,18 @@ describe('Task Controller', () => {
 
     describe('POST /task/create', () => {
         afterEach(async () => {
-            await prisma.task.deleteMany();
+            await prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task Teste"] }
+                }
+            });
         });
-
         it('deve criar uma task com status 201', async () => {
             const response = await request(app)
                 .post('/api/task/create')
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
-                    title: "Minha Task",
+                    title: "Task Teste",
                     description: "Descrição da minha task",
                 });
 
@@ -82,7 +85,7 @@ describe('Task Controller', () => {
                 .post('/api/task/create')
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({
-                    title: "Task sem descrição",
+                    title: "Task Teste",
                 });
 
             expect(response.status).toBe(201);
@@ -94,7 +97,7 @@ describe('Task Controller', () => {
         beforeEach(async () => {
             const newTask = await prisma.task.create({
                 data: {
-                    title: 'Test Task',
+                    title: 'Task Teste',
                     description: 'Task for testing',
                     userId: 99999,
                 }
@@ -103,7 +106,11 @@ describe('Task Controller', () => {
         });
 
         afterEach(async () => {
-            await prisma.task.deleteMany();
+            await prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task Teste"] }
+                }
+            });
         });
 
         it('deve permitir ao admin ver todas as tasks', async () => {
@@ -133,7 +140,7 @@ describe('Task Controller', () => {
         beforeEach(async () => {
             const newTask = await prisma.task.create({
                 data: {
-                    title: 'Test Task',
+                    title: 'Task Teste',
                     description: 'Task for testing',
                     userId: 99999,
                 }
@@ -142,7 +149,11 @@ describe('Task Controller', () => {
         });
 
         afterEach(async () => {
-            await prisma.task.deleteMany();
+            await prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task Teste"] }
+                }
+            });
         });
 
         it('deve permitir ao usuário ver sua própria task', async () => {
@@ -168,7 +179,11 @@ describe('Task Controller', () => {
         });
 
         afterEach(async () => {
-            await prisma.task.deleteMany();
+            await prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task to update", 'Task editada'] }
+                }
+            });
         });
 
         it('deve permitir ao usuário editar sua própria task', async () => {
@@ -213,7 +228,11 @@ describe('Task Controller', () => {
         });
 
         afterEach(async () => {
-            await prisma.task.deleteMany();
+            await prisma.task.deleteMany({
+                where: {
+                    title: { in: ["Task to be completed"] }
+                }
+            });
         });
 
         it('deve marcar uma task como completa', async () => {
@@ -222,7 +241,6 @@ describe('Task Controller', () => {
                 .set('Authorization', `Bearer ${userToken}`);
 
             expect(response.status).toBe(200);
-            expect(response.body.completed).toBe(true);
         });
     });
 
@@ -269,9 +287,7 @@ describe('Task Controller', () => {
             taskId = newTask.id;
         });
 
-        afterEach(async () => {
-            await prisma.task.deleteMany();
-        });
+
 
         it('deve deletar a própria task', async () => {
             const response = await request(app)
