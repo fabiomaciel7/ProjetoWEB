@@ -34,6 +34,10 @@ export class UserService {
     }
 
     async updateUser(id: number, data: Partial<UserDto>) {
+        if(data.password){
+            const hashedPassword = await this.userRepository.hashPassword(data.password);
+            data.password = hashedPassword;
+        }
         return this.userRepository.update(id, data);
     }
 

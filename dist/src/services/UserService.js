@@ -41,6 +41,10 @@ class UserService {
     }
     updateUser(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (data.password) {
+                const hashedPassword = yield this.userRepository.hashPassword(data.password);
+                data.password = hashedPassword;
+            }
             return this.userRepository.update(id, data);
         });
     }
