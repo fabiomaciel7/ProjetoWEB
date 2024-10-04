@@ -35,6 +35,7 @@ Task-Manager
     ```bash
     DATABASE_URL="postgresql://seu_usuario:sua_senha@localhost:5432/seu_banco"
     JWT_SECRET=key
+    FRONTEND_URL=http://localhost:3000
     ```
 
 6. Execute as migrações do Prisma para criar as tabelas no banco de dados:
@@ -49,7 +50,7 @@ Task-Manager
     npm start
     ```
 
-A API estará disponível em http://localhost:3000.
+A API estará disponível em http://localhost:3001.
 
 # Testes
 
