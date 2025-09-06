@@ -2,7 +2,7 @@ import app from './app';
 import { connectDatabase } from './config/database';
 import { UserService } from './services/UserService';
 
-const port = 3001;
+const port = process.env.PORT || 3001; // Usa a porta do Render ou 3001 como padrão
 
 async function startServer() {
   try {
@@ -17,7 +17,7 @@ async function startServer() {
     }
 
     app.listen(port, () => {
-      console.log(`Servidor rodando em http://localhost:${port}`);
+      console.log(`Servidor rodando na porta ${port}`);
     });
   } catch (err) {
     console.error('Erro ao conectar ao banco de dados ou iniciar o servidor:', err);

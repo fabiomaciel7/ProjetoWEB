@@ -7,9 +7,10 @@ import authRoutes from './routes/AuthRoutes';
 
 const app = express();
 
+// MODIFICAÇÃO AQUI 👇
 app.use(cors({
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'], 
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 }));
 
 app.use(express.json());
